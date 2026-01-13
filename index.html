@@ -1,0 +1,2655 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runget 2.0 - Легкая, быстрая, простая и красивая ОС</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans', sans-serif;
+            user-select: none;
+        }
+
+        :root {
+            --plasma-bg: #1b1e20;
+            --plasma-panel: #1a1d21;
+            --plasma-surface: #232629;
+            --plasma-surface-light: #2a2e32;
+            --plasma-border: #3d4349;
+            --plasma-accent: #3daee9;
+            --plasma-accent-hover: #5bc2f5;
+            --plasma-text: #eff0f1;
+            --plasma-text-secondary: #bdc3c7;
+            --plasma-success: #27ae60;
+            --plasma-warning: #f39c12;
+            --plasma-danger: #da4453;
+            --window-header: #2d3136;
+            --window-header-inactive: #252a2e;
+        }
+
+        body {
+            overflow: hidden;
+            background: var(--plasma-bg);
+        }
+
+        /* 3D R Logo */
+        .logo-3d-r {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial Black', 'Segoe UI', sans-serif;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 
+                0 1px 0 #ccc,
+                0 2px 0 #c9c9c9,
+                0 3px 0 #bbb,
+                0 4px 0 #b9b9b9,
+                0 5px 0 #aaa,
+                0 6px 1px rgba(0,0,0,.1),
+                0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3),
+                0 3px 5px rgba(0,0,0,.2),
+                0 5px 10px rgba(0,0,0,.25),
+                0 10px 10px rgba(0,0,0,.2),
+                0 20px 20px rgba(0,0,0,.15);
+            background: linear-gradient(135deg, #3daee9 0%, #2980b9 50%, #1a5276 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4));
+        }
+
+        .logo-3d-r-gradient {
+            background: linear-gradient(180deg, #5dade2 0%, #3daee9 30%, #2874a6 70%, #1a5276 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(3px 5px 8px rgba(0,0,0,0.5));
+        }
+
+        /* Boot Screen */
+        #bootScreen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #1a1d21 0%, #0d0f11 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .boot-logo {
+            width: 140px;
+            height: 140px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .boot-logo .logo-3d-r {
+            font-size: 100px;
+            background: linear-gradient(180deg, #5dade2 0%, #3daee9 30%, #2874a6 70%, #1a5276 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(4px 6px 10px rgba(61, 174, 233, 0.4));
+        }
+
+        .boot-text {
+            color: var(--plasma-text);
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+        }
+
+        .boot-spinner {
+            width: 220px;
+            height: 3px;
+            background: var(--plasma-surface);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .boot-spinner-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--plasma-accent), #5bc2f5);
+            width: 0%;
+            transition: width 0.1s;
+            border-radius: 3px;
+        }
+
+        .boot-status {
+            color: var(--plasma-text-secondary);
+            font-size: 12px;
+            margin-top: 15px;
+            font-weight: 300;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.03); opacity: 0.9; }
+        }
+
+        /* Lock Screen */
+        #lockScreen {
+            position: fixed;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920') center/cover;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(15px);
+        }
+
+        .lock-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .lock-time {
+            color: white;
+            font-size: 86px;
+            font-weight: 300;
+            text-shadow: 0 2px 30px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+
+        .lock-date {
+            color: rgba(255,255,255,0.9);
+            font-size: 18px;
+            margin-bottom: 60px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            font-weight: 300;
+        }
+
+        .lock-avatar {
+            width: 96px;
+            height: 96px;
+            background: linear-gradient(135deg, var(--plasma-surface) 0%, var(--plasma-surface-light) 100%);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            border: 3px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .lock-username {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .lock-input {
+            width: 260px;
+            padding: 12px 18px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .lock-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .lock-input:focus {
+            border-color: var(--plasma-accent);
+            background: rgba(255,255,255,0.18);
+            box-shadow: 0 0 0 3px rgba(61, 174, 233, 0.2);
+        }
+
+        .lock-hint {
+            color: rgba(255,255,255,0.5);
+            font-size: 11px;
+            margin-top: 12px;
+        }
+
+        /* Desktop */
+        #desktop {
+            position: fixed;
+            inset: 0;
+            display: none;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d1b4e 50%, #1a1a2e 100%);
+        }
+
+        #desktopWallpaper {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+
+        #desktopIcons {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 5px;
+            z-index: 1;
+        }
+
+        .desktop-icon {
+            width: 80px;
+            padding: 10px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.15s;
+        }
+
+        .desktop-icon:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .desktop-icon.selected {
+            background: rgba(61,174,233,0.4);
+        }
+
+        .desktop-icon-img {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .desktop-icon-img i {
+            font-size: 42px;
+            color: white;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .desktop-icon-name {
+            color: white;
+            font-size: 11px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+            word-wrap: break-word;
+            line-height: 1.3;
+        }
+
+        /* Panel (Taskbar) */
+        #panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 46px;
+            background: rgba(26, 29, 33, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            padding: 0 6px;
+            z-index: 1000;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.3);
+        }
+
+        #appLauncher {
+            width: 46px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.15s;
+            margin-right: 6px;
+        }
+
+        #appLauncher:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        #appLauncher .logo-3d-r {
+            font-size: 26px;
+            background: linear-gradient(180deg, #5dade2 0%, #3daee9 50%, #2874a6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.3));
+        }
+
+        #taskManager {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 100%;
+            padding: 4px 0;
+        }
+
+        .task-item {
+            height: 38px;
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+            max-width: 200px;
+        }
+
+        .task-item:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        .task-item.active {
+            background: rgba(61, 174, 233, 0.25);
+            border-color: var(--plasma-accent);
+        }
+
+        .task-item-icon {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .task-item-title {
+            color: var(--plasma-text);
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #systemTray {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 0 8px;
+            height: 100%;
+        }
+
+        .tray-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.15s;
+            color: var(--plasma-text);
+        }
+
+        .tray-icon:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .tray-icon i {
+            font-size: 14px;
+        }
+
+        #clockWidget {
+            padding: 0 14px;
+            height: 38px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        #clockWidget:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        #clockTime {
+            color: var(--plasma-text);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        #clockDate {
+            color: var(--plasma-text-secondary);
+            font-size: 10px;
+        }
+
+        /* Application Menu */
+        #appMenu {
+            position: fixed;
+            bottom: 52px;
+            left: 6px;
+            width: 720px;
+            height: 520px;
+            background: rgba(35, 38, 41, 0.98);
+            backdrop-filter: blur(30px);
+            border-radius: 12px;
+            display: none;
+            z-index: 2000;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+
+        .app-menu-header {
+            padding: 14px;
+            border-bottom: 1px solid var(--plasma-border);
+        }
+
+        .app-menu-search {
+            width: 100%;
+            padding: 11px 16px;
+            background: var(--plasma-bg);
+            border: 1px solid var(--plasma-border);
+            border-radius: 8px;
+            color: var(--plasma-text);
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .app-menu-search:focus {
+            border-color: var(--plasma-accent);
+            box-shadow: 0 0 0 3px rgba(61, 174, 233, 0.15);
+        }
+
+        .app-menu-content {
+            display: flex;
+            height: calc(100% - 110px);
+        }
+
+        .app-menu-sidebar {
+            width: 200px;
+            background: rgba(27, 30, 32, 0.5);
+            border-right: 1px solid var(--plasma-border);
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-menu-category {
+            padding: 10px 14px;
+            color: var(--plasma-text);
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.15s;
+        }
+
+        .app-menu-category:hover,
+        .app-menu-category.active {
+            background: rgba(61, 174, 233, 0.2);
+        }
+
+        .app-menu-category.active {
+            color: var(--plasma-accent);
+        }
+
+        .app-menu-category i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .app-menu-apps {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            align-content: start;
+        }
+
+        .app-menu-item {
+            padding: 14px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.15s;
+        }
+
+        .app-menu-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .app-menu-item-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-menu-item-icon i {
+            font-size: 32px;
+            color: var(--plasma-text);
+        }
+
+        .app-menu-item-name {
+            color: var(--plasma-text);
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .app-menu-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 14px;
+            background: rgba(27, 30, 32, 0.8);
+            border-top: 1px solid var(--plasma-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-menu-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .app-menu-user:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .app-menu-user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--plasma-surface-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .app-menu-user-name {
+            color: var(--plasma-text);
+            font-size: 13px;
+        }
+
+        .app-menu-power {
+            display: flex;
+            gap: 6px;
+        }
+
+        .app-menu-power-btn {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.15s;
+            color: var(--plasma-text);
+        }
+
+        .app-menu-power-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .app-menu-power-btn.danger:hover {
+            background: rgba(218, 68, 83, 0.3);
+            color: var(--plasma-danger);
+        }
+
+        /* Windows */
+        .window {
+            position: absolute;
+            background: var(--plasma-surface);
+            border-radius: 10px;
+            box-shadow: 0 15px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            flex-direction: column;
+            min-width: 300px;
+            min-height: 200px;
+            overflow: hidden;
+        }
+
+        .window-header {
+            height: 38px;
+            background: var(--window-header);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            cursor: move;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .window.inactive .window-header {
+            background: var(--window-header-inactive);
+        }
+
+        .window-icon {
+            font-size: 16px;
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .window-title {
+            flex: 1;
+            color: var(--plasma-text);
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .window.inactive .window-title {
+            color: var(--plasma-text-secondary);
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-btn {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 8px;
+            transition: all 0.15s;
+            border: none;
+            color: transparent;
+        }
+
+        .window-btn:hover {
+            color: rgba(0,0,0,0.7);
+        }
+
+        .window-btn-minimize {
+            background: #f1c40f;
+        }
+
+        .window-btn-maximize {
+            background: #2ecc71;
+        }
+
+        .window-btn-close {
+            background: #e74c3c;
+        }
+
+        .window-content {
+            flex: 1;
+            overflow: auto;
+            background: var(--plasma-bg);
+        }
+
+        .window-resize {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 18px;
+            height: 18px;
+            cursor: se-resize;
+        }
+
+        /* Context Menu */
+        #contextMenu {
+            position: fixed;
+            background: rgba(35, 38, 41, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.08);
+            display: none;
+            z-index: 5000;
+            min-width: 200px;
+            padding: 6px;
+        }
+
+        .context-item {
+            padding: 10px 14px;
+            color: var(--plasma-text);
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.1s;
+        }
+
+        .context-item:hover {
+            background: var(--plasma-accent);
+        }
+
+        .context-item i {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .context-separator {
+            height: 1px;
+            background: var(--plasma-border);
+            margin: 6px 0;
+        }
+
+        /* Notifications */
+        #notifications {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 6000;
+        }
+
+        .notification {
+            background: rgba(35, 38, 41, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 14px 18px;
+            min-width: 300px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .notification-icon {
+            font-size: 22px;
+        }
+
+        .notification-text {
+            color: var(--plasma-text);
+            font-size: 13px;
+            flex: 1;
+        }
+
+        .notification-close {
+            color: var(--plasma-text-secondary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .notification-close:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--plasma-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--plasma-border);
+            border-radius: 5px;
+            border: 2px solid var(--plasma-bg);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--plasma-text-secondary);
+        }
+
+        /* KDE App Styles */
+        .kde-toolbar {
+            background: var(--plasma-surface);
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid var(--plasma-border);
+        }
+
+        .kde-btn {
+            padding: 7px 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--plasma-border);
+            border-radius: 6px;
+            color: var(--plasma-text);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kde-btn:hover {
+            background: var(--plasma-accent);
+            border-color: var(--plasma-accent);
+        }
+
+        .kde-btn i {
+            font-size: 12px;
+        }
+
+        .kde-input {
+            padding: 9px 14px;
+            background: var(--plasma-bg);
+            border: 1px solid var(--plasma-border);
+            border-radius: 6px;
+            color: var(--plasma-text);
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .kde-input:focus {
+            border-color: var(--plasma-accent);
+            box-shadow: 0 0 0 3px rgba(61, 174, 233, 0.15);
+        }
+
+        /* Dolphin File Manager */
+        .dolphin-sidebar {
+            width: 200px;
+            background: var(--plasma-surface);
+            border-right: 1px solid var(--plasma-border);
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .dolphin-section-title {
+            color: var(--plasma-text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 10px 8px 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dolphin-place {
+            padding: 9px 12px;
+            color: var(--plasma-text);
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.15s;
+        }
+
+        .dolphin-place:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .dolphin-place.active {
+            background: var(--plasma-accent);
+        }
+
+        .dolphin-place i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .dolphin-content {
+            flex: 1;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+            align-content: start;
+            overflow-y: auto;
+        }
+
+        .dolphin-item {
+            padding: 12px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.15s;
+        }
+
+        .dolphin-item:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .dolphin-item.selected {
+            background: rgba(61,174,233,0.3);
+        }
+
+        .dolphin-item-icon {
+            font-size: 44px;
+            margin-bottom: 6px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dolphin-item-icon i {
+            font-size: 40px;
+        }
+
+        .dolphin-item-name {
+            color: var(--plasma-text);
+            font-size: 11px;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+
+        /* Terminal Konsole */
+        .konsole {
+            background: #0c0c0c;
+            color: #dcdcdc;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 13px;
+            padding: 12px;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .konsole-line {
+            margin-bottom: 3px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .konsole-prompt {
+            color: #26a269;
+            font-weight: 600;
+        }
+
+        .konsole-path {
+            color: #3daee9;
+        }
+
+        .konsole-input {
+            background: transparent;
+            border: none;
+            color: #dcdcdc;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            width: calc(100% - 220px);
+            caret-color: #3daee9;
+        }
+
+        /* System Settings */
+        .settings-sidebar {
+            width: 240px;
+            background: var(--plasma-surface);
+            border-right: 1px solid var(--plasma-border);
+            overflow-y: auto;
+        }
+
+        .settings-section {
+            padding: 8px;
+            border-bottom: 1px solid var(--plasma-border);
+        }
+
+        .settings-section-title {
+            color: var(--plasma-text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 10px 12px 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .settings-item {
+            padding: 11px 14px;
+            color: var(--plasma-text);
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.15s;
+        }
+
+        .settings-item:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .settings-item.active {
+            background: var(--plasma-accent);
+        }
+
+        .settings-item i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .settings-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .settings-title {
+            color: var(--plasma-text);
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        /* About System */
+        .about-logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .about-logo .logo-3d-r {
+            font-size: 80px;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .about-title {
+            font-size: 28px;
+            color: var(--plasma-text);
+            margin-bottom: 6px;
+        }
+
+        .about-subtitle {
+            color: var(--plasma-accent);
+            font-size: 14px;
+        }
+
+        .about-info {
+            background: var(--plasma-surface);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .about-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--plasma-border);
+        }
+
+        .about-row:last-child {
+            border-bottom: none;
+        }
+
+        .about-label {
+            color: var(--plasma-text-secondary);
+        }
+
+        .about-value {
+            color: var(--plasma-text);
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <!-- Boot Screen -->
+    <div id="bootScreen">
+        <div class="boot-logo">
+            <span class="logo-3d-r logo-3d-r-gradient">R</span>
+        </div>
+        <div class="boot-text">Runget 2.0</div>
+        <div class="boot-spinner">
+            <div class="boot-spinner-bar" id="bootProgress"></div>
+        </div>
+        <div class="boot-status" id="bootStatus">Инициализация системы...</div>
+    </div>
+
+    <!-- Lock Screen -->
+    <div id="lockScreen">
+        <div class="lock-overlay"></div>
+        <div class="lock-content">
+            <div class="lock-time" id="lockTime"></div>
+            <div class="lock-date" id="lockDate"></div>
+            <div class="lock-avatar"><i class="fas fa-user"></i></div>
+            <div class="lock-username">Пользователь</div>
+            <input type="password" class="lock-input" id="lockPassword" placeholder="Введите пароль...">
+            <div class="lock-hint">Нажмите Enter для входа</div>
+        </div>
+    </div>
+
+    <!-- Desktop -->
+    <div id="desktop">
+        <div id="desktopWallpaper"></div>
+        <div id="desktopIcons"></div>
+        <div id="windowsContainer"></div>
+
+        <!-- Panel -->
+        <div id="panel">
+            <div id="appLauncher">
+                <span class="logo-3d-r">R</span>
+            </div>
+            <div id="taskManager"></div>
+            <div id="systemTray">
+                <div class="tray-icon" title="Сеть"><i class="fas fa-wifi"></i></div>
+                <div class="tray-icon" title="Звук"><i class="fas fa-volume-up"></i></div>
+                <div class="tray-icon" title="Батарея"><i class="fas fa-battery-three-quarters"></i></div>
+                <div class="tray-icon" title="Уведомления"><i class="fas fa-bell"></i></div>
+            </div>
+            <div id="clockWidget">
+                <div id="clockTime"></div>
+                <div id="clockDate"></div>
+            </div>
+        </div>
+
+        <!-- Application Menu -->
+        <div id="appMenu">
+            <div class="app-menu-header">
+                <input type="text" class="app-menu-search" id="appSearch" placeholder="Поиск приложений...">
+            </div>
+            <div class="app-menu-content">
+                <div class="app-menu-sidebar">
+                    <div class="app-menu-category active" data-category="all">
+                        <i class="fas fa-th-large"></i>
+                        Все приложения
+                    </div>
+                    <div class="app-menu-category" data-category="system">
+                        <i class="fas fa-cog"></i>
+                        Система
+                    </div>
+                    <div class="app-menu-category" data-category="utilities">
+                        <i class="fas fa-tools"></i>
+                        Утилиты
+                    </div>
+                    <div class="app-menu-category" data-category="office">
+                        <i class="fas fa-file-alt"></i>
+                        Офис
+                    </div>
+                    <div class="app-menu-category" data-category="multimedia">
+                        <i class="fas fa-photo-video"></i>
+                        Мультимедиа
+                    </div>
+                    <div class="app-menu-category" data-category="internet">
+                        <i class="fas fa-globe"></i>
+                        Интернет
+                    </div>
+                    <div class="app-menu-category" data-category="games">
+                        <i class="fas fa-gamepad"></i>
+                        Игры
+                    </div>
+                </div>
+                <div class="app-menu-apps" id="appMenuApps"></div>
+            </div>
+            <div class="app-menu-footer">
+                <div class="app-menu-user">
+                    <div class="app-menu-user-avatar"><i class="fas fa-user"></i></div>
+                    <span class="app-menu-user-name">Пользователь</span>
+                </div>
+                <div class="app-menu-power">
+                    <div class="app-menu-power-btn" onclick="lockScreen()" title="Заблокировать"><i class="fas fa-lock"></i></div>
+                    <div class="app-menu-power-btn" onclick="if(confirm('Выйти из системы?')) location.reload()" title="Выход"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="app-menu-power-btn danger" onclick="if(confirm('Выключить систему?')) location.reload()" title="Выключение"><i class="fas fa-power-off"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Context Menu -->
+        <div id="contextMenu"></div>
+
+        <!-- Notifications -->
+        <div id="notifications"></div>
+    </div>
+
+    <script>
+        // ==================== RUNGET 2.0 SYSTEM ====================
+        const Runget = {
+            version: '2.0',
+            codename: 'Anythink Anywhere',
+            kernel: '6.1.0-runget',
+            desktop: 'KDE Plasma 5.27.10',
+            based: 'Debian 13 / Ubuntu',
+            
+            windows: new Map(),
+            windowOrder: [],
+            activeWindow: null,
+            windowId: 0,
+            dragState: null,
+            resizeState: null,
+            
+            fileSystem: {
+                '/': { type: 'folder', children: {
+                    'home': { type: 'folder', children: {
+                        'user': { type: 'folder', children: {
+                            'Документы': { type: 'folder', children: {
+                                'readme.txt': { type: 'file', content: 'Добро пожаловать в Runget 2.0!\n\nЭто быстрая, простая и красивая операционная система.\nОснована на Debian и Ubuntu.\n\nРазработчики:\n- Kolyadual\n- Kirilldual\n- Seregaosm\n- Neeby' },
+                                'notes.txt': { type: 'file', content: 'Мои заметки\n\n- Изучить Runget 2.0\n- Настроить систему\n- Попробовать все приложения' }
+                            }},
+                            'Загрузки': { type: 'folder', children: {} },
+                            'Изображения': { type: 'folder', children: {
+                                'wallpaper.txt': { type: 'file', content: 'Информация об обоях Runget' }
+                            }},
+                            'Музыка': { type: 'folder', children: {} },
+                            'Видео': { type: 'folder', children: {} },
+                            'Рабочий стол': { type: 'folder', children: {} }
+                        }}
+                    }},
+                    'etc': { type: 'folder', children: {
+                        'os-release': { type: 'file', content: 'PRETTY_NAME="Runget 2.0 (Anythink Anywhere)"\nNAME="Runget"\nVERSION_ID="2.0"\nVERSION="2.0 (Anythink Anywhere)"\nVERSION_CODENAME=anythink\nID=runget\nID_LIKE="debian ubuntu"\nHOME_URL="https://t.me/runget_rt"\nSUPPORT_URL="https://t.me/runget_rt"\nBUG_REPORT_URL="runget.feedback@gmail.com"' },
+                        'hostname': { type: 'file', content: 'runget-pc' }
+                    }},
+                    'usr': { type: 'folder', children: {
+                        'share': { type: 'folder', children: {} }
+                    }},
+                    'var': { type: 'folder', children: {
+                        'log': { type: 'folder', children: {} }
+                    }}
+                }}
+            },
+            
+            settings: {
+                wallpaper: 0,
+                theme: 'breeze-dark'
+            }
+        };
+
+        const wallpapers = [
+            { name: 'Runget Default', url: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920', gradient: 'linear-gradient(135deg, #1e3a5f 0%, #2d1b4e 50%, #1a1a2e 100%)' },
+            { name: 'Mountain Dawn', url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920', gradient: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)' },
+            { name: 'Northern Lights', url: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1920', gradient: 'linear-gradient(135deg, #141e30 0%, #243b55 100%)' },
+            { name: 'Night Sky', url: 'https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920', gradient: 'linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%)' },
+            { name: 'Ocean Blue', url: 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1920', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' },
+            { name: 'Forest Green', url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920', gradient: 'linear-gradient(135deg, #0d1f22 0%, #1a3a2a 100%)' }
+        ];
+
+        const apps = [
+            { id: 'dolphin', name: 'Dolphin', icon: 'fa-folder', category: 'system', desktop: true },
+            { id: 'konsole', name: 'Konsole', icon: 'fa-terminal', category: 'system', desktop: true },
+            { id: 'kate', name: 'Kate', icon: 'fa-file-code', category: 'utilities', desktop: true },
+            { id: 'settings', name: 'Параметры системы', icon: 'fa-cog', category: 'system', desktop: true },
+            { id: 'info', name: 'О системе', icon: 'fa-info-circle', category: 'system', desktop: true },
+            { id: 'dgc', name: 'DGC', icon: 'fa-gamepad', category: 'games', desktop: true },
+            { id: 'calculator', name: 'Калькулятор', icon: 'fa-calculator', category: 'utilities', desktop: false },
+            { id: 'spectacle', name: 'Spectacle', icon: 'fa-camera', category: 'utilities', desktop: false },
+            { id: 'gwenview', name: 'Gwenview', icon: 'fa-image', category: 'multimedia', desktop: false },
+            { id: 'elisa', name: 'Elisa', icon: 'fa-music', category: 'multimedia', desktop: false },
+            { id: 'okular', name: 'Okular', icon: 'fa-file-pdf', category: 'office', desktop: false },
+            { id: 'calendar', name: 'Календарь', icon: 'fa-calendar-alt', category: 'utilities', desktop: false },
+            { id: 'weather', name: 'Погода', icon: 'fa-cloud-sun', category: 'utilities', desktop: false },
+            { id: 'monitor', name: 'Системный монитор', icon: 'fa-chart-area', category: 'system', desktop: false },
+            { id: 'firefox', name: 'Firefox', icon: 'fa-firefox-browser', iconType: 'fab', category: 'internet', desktop: true },
+            { id: 'krita', name: 'Krita', icon: 'fa-paint-brush', category: 'multimedia', desktop: false },
+            { id: 'libreoffice', name: 'LibreOffice Writer', icon: 'fa-file-word', category: 'office', desktop: false },
+            { id: 'snake', name: 'Змейка', icon: 'fa-gamepad', category: 'games', desktop: false },
+            { id: 'tasks', name: 'Задачи', icon: 'fa-tasks', category: 'utilities', desktop: false },
+            { id: 'discover', name: 'Discover', icon: 'fa-store', category: 'system', desktop: false }
+        ];
+
+        // ==================== BOOT ====================
+        async function boot() {
+            const progress = document.getElementById('bootProgress');
+            const status = document.getElementById('bootStatus');
+            const messages = [
+                'Инициализация ядра Linux 6.1.0-runget...',
+                'Загрузка модулей Runget...',
+                'Монтирование файловых систем...',
+                'Запуск systemd...',
+                'Инициализация KDE Plasma...',
+                'Загрузка рабочего стола...'
+            ];
+            
+            for (let i = 0; i <= 100; i += 1) {
+                progress.style.width = i + '%';
+                if (i % 18 === 0) status.textContent = messages[Math.floor(i / 18)] || messages[messages.length - 1];
+                await new Promise(r => setTimeout(r, 30));
+            }
+            
+            document.getElementById('bootScreen').style.display = 'none';
+            document.getElementById('lockScreen').style.display = 'flex';
+            updateLockTime();
+        }
+
+        function updateLockTime() {
+            const now = new Date();
+            document.getElementById('lockTime').textContent = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            const dateStr = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('lockDate').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        }
+        setInterval(updateLockTime, 1000);
+
+        document.getElementById('lockPassword').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('desktop').style.display = 'block';
+                initDesktop();
+                showNotification('Добро пожаловать в Runget 2.0!', 'success');
+            }
+        });
+
+        function lockScreen() {
+            document.getElementById('appMenu').style.display = 'none';
+            document.getElementById('lockScreen').style.display = 'flex';
+            document.getElementById('lockPassword').value = '';
+            document.getElementById('lockPassword').focus();
+        }
+
+        // ==================== DESKTOP ====================
+        function initDesktop() {
+            renderDesktopIcons();
+            renderAppMenu();
+            updateClock();
+            setInterval(updateClock, 1000);
+            applyWallpaper();
+            
+            document.getElementById('appLauncher').onclick = toggleAppMenu;
+            document.getElementById('clockWidget').onclick = () => openApp('calendar');
+            
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#appMenu') && !e.target.closest('#appLauncher')) {
+                    document.getElementById('appMenu').style.display = 'none';
+                }
+                document.getElementById('contextMenu').style.display = 'none';
+            });
+            
+            document.getElementById('desktop').addEventListener('contextmenu', (e) => {
+                if (!e.target.closest('.window')) {
+                    e.preventDefault();
+                    showContextMenu(e.clientX, e.clientY);
+                }
+            });
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clockTime').textContent = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('clockDate').textContent = now.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
+        }
+
+        function renderDesktopIcons() {
+            const container = document.getElementById('desktopIcons');
+            apps.filter(a => a.desktop).forEach(app => {
+                const icon = document.createElement('div');
+                icon.className = 'desktop-icon';
+                const iconClass = app.iconType === 'fab' ? 'fab' : 'fas';
+                icon.innerHTML = `
+                    <div class="desktop-icon-img"><i class="${iconClass} ${app.icon}"></i></div>
+                    <div class="desktop-icon-name">${app.name}</div>
+                `;
+                icon.ondblclick = () => openApp(app.id);
+                icon.onclick = () => {
+                    document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+                    icon.classList.add('selected');
+                };
+                container.appendChild(icon);
+            });
+        }
+
+        function renderAppMenu() {
+            const container = document.getElementById('appMenuApps');
+            apps.forEach(app => {
+                const item = document.createElement('div');
+                item.className = 'app-menu-item';
+                item.dataset.category = app.category;
+                const iconClass = app.iconType === 'fab' ? 'fab' : 'fas';
+                item.innerHTML = `
+                    <div class="app-menu-item-icon"><i class="${iconClass} ${app.icon}"></i></div>
+                    <div class="app-menu-item-name">${app.name}</div>
+                `;
+                item.onclick = () => { openApp(app.id); toggleAppMenu(); };
+                container.appendChild(item);
+            });
+            
+            document.querySelectorAll('.app-menu-category').forEach(cat => {
+                cat.onclick = () => {
+                    document.querySelectorAll('.app-menu-category').forEach(c => c.classList.remove('active'));
+                    cat.classList.add('active');
+                    const category = cat.dataset.category;
+                    document.querySelectorAll('.app-menu-item').forEach(item => {
+                        item.style.display = (category === 'all' || item.dataset.category === category) ? 'block' : 'none';
+                    });
+                };
+            });
+            
+            document.getElementById('appSearch').oninput = (e) => {
+                const query = e.target.value.toLowerCase();
+                document.querySelectorAll('.app-menu-item').forEach(item => {
+                    const name = item.querySelector('.app-menu-item-name').textContent.toLowerCase();
+                    item.style.display = name.includes(query) ? 'block' : 'none';
+                });
+            };
+        }
+
+        function toggleAppMenu() {
+            const menu = document.getElementById('appMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            if (menu.style.display === 'block') {
+                document.getElementById('appSearch').focus();
+            }
+        }
+
+        function applyWallpaper() {
+            const wp = wallpapers[Runget.settings.wallpaper];
+            const el = document.getElementById('desktopWallpaper');
+            el.style.background = wp.gradient;
+            const img = new Image();
+            img.onload = () => { el.style.background = `url('${wp.url}') center/cover`; };
+            img.src = wp.url;
+        }
+
+        function showContextMenu(x, y) {
+            const menu = document.getElementById('contextMenu');
+            menu.innerHTML = `
+                <div class="context-item" onclick="openApp('dolphin')"><i class="fas fa-folder"></i> Открыть Dolphin</div>
+                <div class="context-item" onclick="openApp('konsole')"><i class="fas fa-terminal"></i> Открыть Konsole</div>
+                <div class="context-separator"></div>
+                <div class="context-item" onclick="openApp('settings')"><i class="fas fa-cog"></i> Параметры системы</div>
+                <div class="context-item" onclick="openApp('info')"><i class="fas fa-info-circle"></i> О системе</div>
+            `;
+            menu.style.left = Math.min(x, window.innerWidth - 220) + 'px';
+            menu.style.top = Math.min(y, window.innerHeight - 200) + 'px';
+            menu.style.display = 'block';
+        }
+
+        function showNotification(text, type = 'info') {
+            const icons = { info: 'fa-info-circle', success: 'fa-check-circle', warning: 'fa-exclamation-triangle', error: 'fa-times-circle' };
+            const colors = { info: '#3daee9', success: '#27ae60', warning: '#f39c12', error: '#da4453' };
+            const container = document.getElementById('notifications');
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.innerHTML = `
+                <span class="notification-icon" style="color:${colors[type]}"><i class="fas ${icons[type]}"></i></span>
+                <span class="notification-text">${text}</span>
+                <span class="notification-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></span>
+            `;
+            container.appendChild(notif);
+            setTimeout(() => notif.remove(), 5000);
+        }
+
+        // ==================== WINDOW MANAGEMENT ====================
+        function createWindow(options) {
+            const id = Runget.windowId++;
+            const win = {
+                id,
+                title: options.title || 'Окно',
+                icon: options.icon || 'fa-window-maximize',
+                iconType: options.iconType || 'fas',
+                width: options.width || 750,
+                height: options.height || 500,
+                x: options.x ?? 100 + (Runget.windows.size * 30),
+                y: options.y ?? 60 + (Runget.windows.size * 30),
+                minimized: false,
+                maximized: false,
+                content: options.content || '',
+                appId: options.appId
+            };
+            
+            Runget.windows.set(id, win);
+            Runget.windowOrder.push(id);
+            renderWindow(win);
+            focusWindow(id);
+            updateTaskbar();
+            return id;
+        }
+
+        function renderWindow(win) {
+            const el = document.createElement('div');
+            el.id = `window-${win.id}`;
+            el.className = 'window';
+            el.style.cssText = `left:${win.x}px;top:${win.y}px;width:${win.width}px;height:${win.height}px;z-index:${100 + Runget.windowOrder.indexOf(win.id)}`;
+            const iconClass = win.iconType === 'fab' ? 'fab' : 'fas';
+            el.innerHTML = `
+                <div class="window-header" data-window="${win.id}">
+                    <span class="window-icon"><i class="${iconClass} ${win.icon}"></i></span>
+                    <span class="window-title">${win.title}</span>
+                    <div class="window-controls">
+                        <button class="window-btn window-btn-minimize" onclick="minimizeWindow(${win.id})"><i class="fas fa-minus"></i></button>
+                        <button class="window-btn window-btn-maximize" onclick="maximizeWindow(${win.id})"><i class="fas fa-square"></i></button>
+                        <button class="window-btn window-btn-close" onclick="closeWindow(${win.id})"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="window-content">${win.content}</div>
+                <div class="window-resize" data-window="${win.id}"></div>
+            `;
+            document.getElementById('windowsContainer').appendChild(el);
+            
+            const header = el.querySelector('.window-header');
+            header.onmousedown = (e) => {
+                if (e.target.closest('.window-controls')) return;
+                focusWindow(win.id);
+                const w = Runget.windows.get(win.id);
+                if (w.maximized) return;
+                Runget.dragState = { id: win.id, startX: e.clientX - w.x, startY: e.clientY - w.y };
+            };
+            
+            header.ondblclick = (e) => {
+                if (!e.target.closest('.window-controls')) maximizeWindow(win.id);
+            };
+            
+            const resize = el.querySelector('.window-resize');
+            resize.onmousedown = (e) => {
+                e.stopPropagation();
+                const w = Runget.windows.get(win.id);
+                Runget.resizeState = { id: win.id, startX: e.clientX, startY: e.clientY, startW: w.width, startH: w.height };
+            };
+            
+            el.onmousedown = () => focusWindow(win.id);
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (Runget.dragState) {
+                const win = Runget.windows.get(Runget.dragState.id);
+                win.x = e.clientX - Runget.dragState.startX;
+                win.y = Math.max(0, e.clientY - Runget.dragState.startY);
+                const el = document.getElementById(`window-${win.id}`);
+                el.style.left = win.x + 'px';
+                el.style.top = win.y + 'px';
+            }
+            if (Runget.resizeState) {
+                const win = Runget.windows.get(Runget.resizeState.id);
+                win.width = Math.max(300, Runget.resizeState.startW + e.clientX - Runget.resizeState.startX);
+                win.height = Math.max(200, Runget.resizeState.startH + e.clientY - Runget.resizeState.startY);
+                const el = document.getElementById(`window-${win.id}`);
+                el.style.width = win.width + 'px';
+                el.style.height = win.height + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            Runget.dragState = null;
+            Runget.resizeState = null;
+        });
+
+        function focusWindow(id) {
+            Runget.activeWindow = id;
+            Runget.windowOrder = Runget.windowOrder.filter(i => i !== id);
+            Runget.windowOrder.push(id);
+            Runget.windows.forEach((w, wid) => {
+                const el = document.getElementById(`window-${wid}`);
+                if (el) {
+                    el.style.zIndex = 100 + Runget.windowOrder.indexOf(wid);
+                    el.classList.toggle('inactive', wid !== id);
+                }
+            });
+            updateTaskbar();
+        }
+
+        function minimizeWindow(id) {
+            const win = Runget.windows.get(id);
+            win.minimized = !win.minimized;
+            document.getElementById(`window-${id}`).style.display = win.minimized ? 'none' : 'flex';
+            updateTaskbar();
+        }
+
+        function maximizeWindow(id) {
+            const win = Runget.windows.get(id);
+            const el = document.getElementById(`window-${id}`);
+            win.maximized = !win.maximized;
+            if (win.maximized) {
+                win.prevState = { x: win.x, y: win.y, width: win.width, height: win.height };
+                el.style.cssText = `left:0;top:0;width:100%;height:calc(100% - 46px);z-index:${el.style.zIndex};border-radius:0`;
+            } else {
+                Object.assign(win, win.prevState);
+                el.style.cssText = `left:${win.x}px;top:${win.y}px;width:${win.width}px;height:${win.height}px;z-index:${el.style.zIndex}`;
+            }
+        }
+
+        function closeWindow(id) {
+            document.getElementById(`window-${id}`)?.remove();
+            Runget.windows.delete(id);
+            Runget.windowOrder = Runget.windowOrder.filter(i => i !== id);
+            updateTaskbar();
+        }
+
+        function updateTaskbar() {
+            const container = document.getElementById('taskManager');
+            container.innerHTML = '';
+            Runget.windows.forEach((win, id) => {
+                const item = document.createElement('div');
+                item.className = `task-item ${Runget.activeWindow === id && !win.minimized ? 'active' : ''}`;
+                const iconClass = win.iconType === 'fab' ? 'fab' : 'fas';
+                item.innerHTML = `<span class="task-item-icon"><i class="${iconClass} ${win.icon}"></i></span><span class="task-item-title">${win.title}</span>`;
+                item.onclick = () => {
+                    if (win.minimized) minimizeWindow(id);
+                    else if (Runget.activeWindow === id) minimizeWindow(id);
+                    else focusWindow(id);
+                };
+                container.appendChild(item);
+            });
+        }
+
+        // ==================== APPLICATIONS ====================
+        function openApp(appId, params = {}) {
+            const handlers = {
+                dolphin: () => openDolphin(params.path || '/home/user'),
+                konsole: openKonsole,
+                kate: () => openKate(params.file),
+                settings: openSettings,
+                info: openSystemInfo,
+                dgc: openDGC,
+                calculator: openCalculator,
+                spectacle: () => showNotification('Скриншот сохранён', 'success'),
+                gwenview: openGwenview,
+                elisa: openElisa,
+                okular: openOkular,
+                calendar: openCalendar,
+                weather: openWeather,
+                monitor: openSystemMonitor,
+                firefox: openFirefox,
+                krita: openKrita,
+                libreoffice: openLibreOffice,
+                snake: openSnake,
+                tasks: openTasks,
+                discover: openDiscover
+            };
+            if (handlers[appId]) handlers[appId]();
+        }
+
+        // DGC - Dual Gaming Centre
+        function openDGC() {
+            createWindow({
+                title: 'DGC - Dual Gaming Centre',
+                icon: 'fa-gamepad',
+                width: 1100,
+                height: 700,
+                content: `
+                    <div class="kde-toolbar">
+                        <button class="kde-btn" onclick="document.getElementById('dgcFrame').src = document.getElementById('dgcFrame').src"><i class="fas fa-redo"></i> Обновить</button>
+                        <span style="flex:1;text-align:center;color:var(--plasma-text);font-size:13px"><i class="fas fa-gamepad"></i> Dual Gaming Centre</span>
+                        <button class="kde-btn" onclick="window.open('https://kolyadual.github.io/dualgamingcentre/', '_blank')"><i class="fas fa-external-link-alt"></i> Открыть в браузере</button>
+                    </div>
+                    <iframe id="dgcFrame" style="width:100%;height:calc(100% - 46px);border:none;background:#1a1a2e" src="https://kolyadual.github.io/dualgamingcentre/"></iframe>
+                `,
+                appId: 'dgc'
+            });
+        }
+
+        // Dolphin File Manager
+        function openDolphin(path = '/home/user') {
+            let currentPath = path;
+            
+            function getFolder(p) {
+                const parts = p.split('/').filter(Boolean);
+                let current = Runget.fileSystem['/'];
+                for (const part of parts) {
+                    if (current.children && current.children[part]) current = current.children[part];
+                }
+                return current;
+            }
+            
+            function render() {
+                const folder = getFolder(currentPath);
+                const items = folder.children || {};
+                const places = [
+                    { icon: 'fa-home', name: 'Домой', path: '/home/user' },
+                    { icon: 'fa-file-alt', name: 'Документы', path: '/home/user/Документы' },
+                    { icon: 'fa-download', name: 'Загрузки', path: '/home/user/Загрузки' },
+                    { icon: 'fa-image', name: 'Изображения', path: '/home/user/Изображения' },
+                    { icon: 'fa-music', name: 'Музыка', path: '/home/user/Музыка' },
+                    { icon: 'fa-video', name: 'Видео', path: '/home/user/Видео' },
+                    { icon: 'fa-hdd', name: 'Корень', path: '/' }
+                ];
+                
+                let content = `
+                    <div class="kde-toolbar">
+                        <button class="kde-btn" onclick="this.closest('.window-content').__nav('..')"><i class="fas fa-arrow-left"></i></button>
+                        <button class="kde-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fas fa-arrow-up"></i></button>
+                        <input class="kde-input" style="flex:1;margin:0 8px" value="${currentPath}" readonly>
+                        <button class="kde-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div style="display:flex;height:calc(100% - 46px)">
+                        <div class="dolphin-sidebar">
+                            <div class="dolphin-section-title">Места</div>
+                            ${places.map(p => `<div class="dolphin-place ${p.path === currentPath ? 'active' : ''}" onclick="this.closest('.window-content').__go('${p.path}')"><i class="fas ${p.icon}"></i> ${p.name}</div>`).join('')}
+                        </div>
+                        <div class="dolphin-content">
+                `;
+                
+                Object.entries(items).forEach(([name, item]) => {
+                    const icon = item.type === 'folder' ? 'fa-folder' : 'fa-file-alt';
+                    const color = item.type === 'folder' ? '#f8b84e' : '#bdc3c7';
+                    content += `<div class="dolphin-item" ondblclick="this.closest('.window-content').__open('${name}', '${item.type}')">
+                        <div class="dolphin-item-icon"><i class="fas ${icon}" style="color:${color}"></i></div>
+                        <div class="dolphin-item-name">${name}</div>
+                    </div>`;
+                });
+                
+                if (Object.keys(items).length === 0) {
+                    content += '<div style="grid-column:1/-1;text-align:center;color:var(--plasma-text-secondary);padding:60px 20px"><i class="fas fa-folder-open" style="font-size:48px;margin-bottom:16px;display:block;opacity:0.5"></i>Папка пуста</div>';
+                }
+                
+                content += '</div></div>';
+                return content;
+            }
+            
+            const winId = createWindow({ title: 'Dolphin — ' + currentPath, icon: 'fa-folder', width: 900, height: 550, content: render(), appId: 'dolphin' });
+            
+            const contentEl = document.querySelector(`#window-${winId} .window-content`);
+            function setupHandlers() {
+                contentEl.__nav = (dir) => {
+                    if (dir === '..') {
+                        const parts = currentPath.split('/').filter(Boolean);
+                        parts.pop();
+                        currentPath = '/' + parts.join('/') || '/';
+                    } else {
+                        currentPath = dir;
+                    }
+                    contentEl.innerHTML = render();
+                    document.querySelector(`#window-${winId} .window-title`).textContent = 'Dolphin — ' + currentPath;
+                    setupHandlers();
+                };
+                contentEl.__go = (path) => {
+                    currentPath = path;
+                    contentEl.innerHTML = render();
+                    document.querySelector(`#window-${winId} .window-title`).textContent = 'Dolphin — ' + currentPath;
+                    setupHandlers();
+                };
+                contentEl.__open = (name, type) => {
+                    if (type === 'folder') {
+                        currentPath = currentPath === '/' ? '/' + name : currentPath + '/' + name;
+                        contentEl.innerHTML = render();
+                        document.querySelector(`#window-${winId} .window-title`).textContent = 'Dolphin — ' + currentPath;
+                        setupHandlers();
+                    } else {
+                        const folder = getFolder(currentPath);
+                        openApp('kate', { file: { name, content: folder.children[name].content } });
+                    }
+                };
+            }
+            setupHandlers();
+        }
+
+        // Konsole Terminal
+        function openKonsole() {
+            let history = ['Welcome to Runget 2.0 "Anythink Anywhere"', 'Type "help" for available commands', ''];
+            let cwd = '/home/user';
+            
+            function getFolder(p) {
+                const parts = p.split('/').filter(Boolean);
+                let current = Runget.fileSystem['/'];
+                for (const part of parts) {
+                    if (current.children && current.children[part]) current = current.children[part];
+                }
+                return current;
+            }
+            
+            const winId = createWindow({
+                title: 'Konsole',
+                icon: 'fa-terminal',
+                width: 750,
+                height: 480,
+                content: `<div class="konsole" id="konsole-${Runget.windowId}"><div id="konsoleOutput"></div><div style="display:flex"><span class="konsole-prompt">user@runget</span>:<span class="konsole-path">~</span>$ <input class="konsole-input" id="konsoleInput" autofocus></div></div>`,
+                appId: 'konsole'
+            });
+            
+            const output = document.getElementById('konsoleOutput');
+            const input = document.getElementById('konsoleInput');
+            
+            function updateOutput() {
+                output.innerHTML = history.map(l => `<div class="konsole-line">${l}</div>`).join('');
+                output.parentElement.scrollTop = output.parentElement.scrollHeight;
+            }
+            
+            function updatePrompt() {
+                const path = cwd.replace('/home/user', '~') || '/';
+                input.previousElementSibling.textContent = path;
+            }
+            
+            updateOutput();
+            
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    const cmd = input.value.trim();
+                    const displayPath = cwd.replace('/home/user', '~') || '/';
+                    history.push(`<span class="konsole-prompt">user@runget</span>:<span class="konsole-path">${displayPath}</span>$ ${cmd}`);
+                    
+                    if (cmd) {
+                        const parts = cmd.split(' ');
+                        const command = parts[0];
+                        const args = parts.slice(1);
+                        
+                        const commands = {
+                            help: () => 'Доступные команды: help, ls, cd, pwd, cat, mkdir, touch, rm, echo, clear, date, whoami, uname, neofetch, hostname',
+                            ls: () => {
+                                const folder = getFolder(cwd);
+                                return Object.entries(folder.children || {}).map(([n, f]) => 
+                                    `<span style="color:${f.type === 'folder' ? '#3daee9' : '#eff0f1'}">${n}${f.type === 'folder' ? '/' : ''}</span>`
+                                ).join('  ') || '';
+                            },
+                            cd: () => {
+                                if (!args[0] || args[0] === '~') { cwd = '/home/user'; updatePrompt(); return ''; }
+                                if (args[0] === '/') { cwd = '/'; updatePrompt(); return ''; }
+                                if (args[0] === '..') {
+                                    const parts = cwd.split('/').filter(Boolean);
+                                    parts.pop();
+                                    cwd = '/' + parts.join('/') || '/';
+                                    updatePrompt();
+                                    return '';
+                                }
+                                const folder = getFolder(cwd);
+                                if (folder.children?.[args[0]]?.type === 'folder') {
+                                    cwd = cwd === '/' ? '/' + args[0] : cwd + '/' + args[0];
+                                    updatePrompt();
+                                    return '';
+                                }
+                                return `bash: cd: ${args[0]}: Нет такого файла или каталога`;
+                            },
+                            pwd: () => cwd,
+                            cat: () => {
+                                if (!args[0]) return 'cat: отсутствует операнд';
+                                const folder = getFolder(cwd);
+                                if (folder.children?.[args[0]]?.type === 'file') return folder.children[args[0]].content.replace(/\n/g, '<br>');
+                                return `cat: ${args[0]}: Нет такого файла или каталога`;
+                            },
+                            mkdir: () => {
+                                if (!args[0]) return 'mkdir: отсутствует операнд';
+                                const folder = getFolder(cwd);
+                                folder.children[args[0]] = { type: 'folder', children: {} };
+                                return '';
+                            },
+                            touch: () => {
+                                if (!args[0]) return 'touch: отсутствует операнд';
+                                const folder = getFolder(cwd);
+                                folder.children[args[0]] = { type: 'file', content: '' };
+                                return '';
+                            },
+                            rm: () => {
+                                if (!args[0]) return 'rm: отсутствует операнд';
+                                const folder = getFolder(cwd);
+                                if (folder.children?.[args[0]]) { delete folder.children[args[0]]; return ''; }
+                                return `rm: невозможно удалить '${args[0]}': Нет такого файла или каталога`;
+                            },
+                            echo: () => args.join(' '),
+                            clear: () => { history = []; return ''; },
+                            date: () => new Date().toLocaleString('ru-RU'),
+                            whoami: () => 'user',
+                            hostname: () => 'runget-pc',
+                            uname: () => args[0] === '-a' ? `Linux runget-pc ${Runget.kernel} #1 SMP PREEMPT_DYNAMIC Runget 2.0 x86_64 GNU/Linux` : 'Linux',
+                            neofetch: () => `
+<span style="color:#3daee9">       RRRRRRRRRRR</span>           <span style="color:#3daee9">user</span>@<span style="color:#3daee9">runget-pc</span>
+<span style="color:#3daee9">       RR       RR</span>          ─────────────────
+<span style="color:#3daee9">       RR       RR</span>          <span style="color:#3daee9">OS:</span> Runget 2.0 Anythink Anywhere x86_64
+<span style="color:#3daee9">       RRRRRRRRRRR</span>           <span style="color:#3daee9">Host:</span> Web Browser
+<span style="color:#3daee9">       RR   RR</span>               <span style="color:#3daee9">Kernel:</span> ${Runget.kernel}
+<span style="color:#3daee9">       RR    RR</span>              <span style="color:#3daee9">Uptime:</span> ${Math.floor((Date.now() % 86400000) / 60000)} mins
+<span style="color:#3daee9">       RR     RR</span>             <span style="color:#3daee9">Shell:</span> bash 5.2.15
+<span style="color:#3daee9">       RR      RR</span>            <span style="color:#3daee9">DE:</span> ${Runget.desktop}
+<span style="color:#3daee9">       RR       RR</span>           <span style="color:#3daee9">WM:</span> KWin
+                              <span style="color:#3daee9">Theme:</span> Breeze Dark
+                              <span style="color:#3daee9">Terminal:</span> Konsole
+                              <span style="color:#3daee9">CPU:</span> Virtual CPU @ ${navigator.hardwareConcurrency || 4} cores
+                              <span style="color:#3daee9">Memory:</span> ${Math.round(performance?.memory?.usedJSHeapSize / 1024 / 1024) || '~256'} MiB / 16384 MiB`
+                        };
+                        
+                        const result = commands[command] ? commands[command]() : `bash: ${command}: команда не найдена`;
+                        if (result) history.push(result);
+                    }
+                    
+                    updateOutput();
+                    input.value = '';
+                }
+            };
+            
+            setTimeout(() => input.focus(), 100);
+        }
+
+        // Kate Editor
+        function openKate(file) {
+            const winId = createWindow({
+                title: file ? file.name + ' — Kate' : 'Безымянный — Kate',
+                icon: 'fa-file-code',
+                width: 750,
+                height: 520,
+                content: `
+                    <div class="kde-toolbar">
+                        <button class="kde-btn" onclick="this.closest('.window-content').__new()"><i class="fas fa-file"></i> Новый</button>
+                        <button class="kde-btn" onclick="this.closest('.window-content').__save()"><i class="fas fa-save"></i> Сохранить</button>
+                    </div>
+                    <textarea style="width:100%;height:calc(100% - 46px);background:#1a1d21;color:var(--plasma-text);border:none;padding:16px;font-family:'JetBrains Mono','Fira Code',monospace;font-size:13px;resize:none;outline:none;line-height:1.6">${file?.content || ''}</textarea>
+                `,
+                appId: 'kate'
+            });
+            
+            const contentEl = document.querySelector(`#window-${winId} .window-content`);
+            contentEl.__new = () => {
+                contentEl.querySelector('textarea').value = '';
+                document.querySelector(`#window-${winId} .window-title`).textContent = 'Безымянный — Kate';
+            };
+            contentEl.__save = () => {
+                const text = contentEl.querySelector('textarea').value;
+                const blob = new Blob([text], { type: 'text/plain' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'document.txt';
+                a.click();
+                showNotification('Файл сохранён', 'success');
+            };
+        }
+
+        // System Settings
+        function openSettings() {
+            createWindow({
+                title: 'Параметры системы',
+                icon: 'fa-cog',
+                width: 900,
+                height: 600,
+                content: `
+                    <div style="display:flex;height:100%">
+                        <div class="settings-sidebar">
+                            <div class="settings-section">
+                                <div class="settings-section-title">Внешний вид</div>
+                                <div class="settings-item active"><i class="fas fa-image"></i> Обои</div>
+                                <div class="settings-item"><i class="fas fa-palette"></i> Глобальная тема</div>
+                                <div class="settings-item"><i class="fas fa-paint-roller"></i> Цвета</div>
+                            </div>
+                            <div class="settings-section">
+                                <div class="settings-section-title">Рабочее пространство</div>
+                                <div class="settings-item"><i class="fas fa-desktop"></i> Рабочий стол</div>
+                                <div class="settings-item"><i class="fas fa-bars"></i> Панель</div>
+                            </div>
+                            <div class="settings-section">
+                                <div class="settings-section-title">Оборудование</div>
+                                <div class="settings-item"><i class="fas fa-tv"></i> Дисплей</div>
+                                <div class="settings-item"><i class="fas fa-volume-up"></i> Звук</div>
+                                <div class="settings-item"><i class="fas fa-keyboard"></i> Клавиатура</div>
+                                <div class="settings-item"><i class="fas fa-mouse"></i> Мышь</div>
+                            </div>
+                            <div class="settings-section">
+                                <div class="settings-section-title">Система</div>
+                                <div class="settings-item" onclick="openApp('info')"><i class="fas fa-info-circle"></i> О системе</div>
+                            </div>
+                        </div>
+                        <div class="settings-content">
+                            <h2 class="settings-title">Обои рабочего стола</h2>
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+                                ${wallpapers.map((w, i) => `
+                                    <div style="border-radius:10px;overflow:hidden;cursor:pointer;border:3px solid ${Runget.settings.wallpaper === i ? 'var(--plasma-accent)' : 'transparent'};transition:all 0.2s" 
+                                         onclick="Runget.settings.wallpaper=${i};applyWallpaper();this.parentElement.querySelectorAll('div').forEach(d=>d.style.borderColor='transparent');this.style.borderColor='var(--plasma-accent)'">
+                                        <div style="height:110px;background:${w.gradient};background-size:cover"></div>
+                                        <div style="padding:10px;background:var(--plasma-surface);color:var(--plasma-text);font-size:12px">${w.name}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `,
+                appId: 'settings'
+            });
+        }
+
+        // System Info
+        function openSystemInfo() {
+            createWindow({
+                title: 'О системе',
+                icon: 'fa-info-circle',
+                width: 600,
+                height: 580,
+                content: `
+                    <div style="padding:30px;overflow-y:auto;height:100%">
+                        <div class="about-logo">
+                            <span class="logo-3d-r logo-3d-r-gradient" style="font-size:80px">R</span>
+                            <div class="about-title">Runget 2.0</div>
+                            <div class="about-subtitle">"Anythink Anywhere"</div>
+                        </div>
+                        
+                        <div class="about-info">
+                            <div class="about-row">
+                                <span class="about-label">Версия ОС</span>
+                                <span class="about-value">${Runget.version} (${Runget.codename})</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Ядро Linux</span>
+                                <span class="about-value">${Runget.kernel}</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Рабочий стол</span>
+                                <span class="about-value">${Runget.desktop}</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Основана на</span>
+                                <span class="about-value">${Runget.based}</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Архитектура</span>
+                                <span class="about-value">x86_64</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Графическая система</span>
+                                <span class="about-value">Wayland</span>
+                            </div>
+                        </div>
+                        
+                        <div class="about-info">
+                            <div class="about-row">
+                                <span class="about-label">Разработчики</span>
+                                <span class="about-value">Kolyadual, Kirilldual, Seregaosm, Neeby</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Telegram</span>
+                                <span class="about-value"><a href="https://t.me/runget_rt" style="color:var(--plasma-accent)">@runget_rt</a></span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Email</span>
+                                <span class="about-value">runget.feedback@gmail.com</span>
+                            </div>
+                        </div>
+                        
+                        <p style="color:var(--plasma-text-secondary);font-size:12px;text-align:center;margin-top:20px">
+                            Легкая, быстрая, простая и красивая операционная система<br>
+                            Поддержка Windows, Linux и Android приложений<br><br>
+                            © 2025 Kolyadual and Runget team. Все права защищены.
+                        </p>
+                    </div>
+                `,
+                appId: 'info'
+            });
+        }
+
+        // Calculator
+        function openCalculator() {
+            let display = '0';
+            let prev = null, op = null, waitOp = false;
+            
+            const winId = createWindow({
+                title: 'Калькулятор',
+                icon: 'fa-calculator',
+                width: 340,
+                height: 440,
+                content: '',
+                appId: 'calculator'
+            });
+            
+            function render() {
+                const btns = ['C', '±', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '⌫', '='];
+                return `
+                    <div style="padding:16px;background:var(--plasma-bg);height:100%">
+                        <div style="background:var(--plasma-surface);padding:20px;border-radius:8px;text-align:right;font-size:36px;color:var(--plasma-text);margin-bottom:16px;font-weight:300;min-height:70px;display:flex;align-items:center;justify-content:flex-end" id="calcDisplay">${display}</div>
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                            ${btns.map(b => {
+                                let bg = 'rgba(255,255,255,0.06)';
+                                if (['÷','×','-','+','='].includes(b)) bg = 'var(--plasma-accent)';
+                                if (['C','±','%'].includes(b)) bg = 'rgba(255,255,255,0.12)';
+                                return `<button style="padding:18px;border:none;border-radius:8px;font-size:18px;cursor:pointer;background:${bg};color:var(--plasma-text);transition:all 0.15s" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter=''" onclick="window.__calc('${b}')">${b}</button>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.querySelector(`#window-${winId} .window-content`).innerHTML = render();
+            
+            window.__calc = (b) => {
+                const dispEl = document.getElementById('calcDisplay');
+                if (!dispEl) return;
+                
+                if (b >= '0' && b <= '9' || b === '.') {
+                    display = waitOp ? b : (display === '0' && b !== '.' ? b : display + b);
+                    waitOp = false;
+                } else if (['+','-','×','÷'].includes(b)) {
+                    if (op && !waitOp) calculate();
+                    prev = parseFloat(display);
+                    op = b;
+                    waitOp = true;
+                } else if (b === '=') {
+                    calculate();
+                    op = null;
+                } else if (b === 'C') {
+                    display = '0'; prev = null; op = null;
+                } else if (b === '±') {
+                    display = String(-parseFloat(display));
+                } else if (b === '%') {
+                    display = String(parseFloat(display) / 100);
+                } else if (b === '⌫') {
+                    display = display.length > 1 ? display.slice(0, -1) : '0';
+                }
+                dispEl.textContent = display;
+            };
+            
+            function calculate() {
+                const cur = parseFloat(display);
+                let r = cur;
+                if (op === '+') r = prev + cur;
+                else if (op === '-') r = prev - cur;
+                else if (op === '×') r = prev * cur;
+                else if (op === '÷') r = cur !== 0 ? prev / cur : 'Ошибка';
+                display = String(typeof r === 'number' ? Math.round(r * 1000000) / 1000000 : r);
+                waitOp = true;
+            }
+        }
+
+        // Firefox Browser
+        function openFirefox() {
+            const winId = createWindow({
+                title: 'Firefox',
+                icon: 'fa-firefox-browser',
+                iconType: 'fab',
+                width: 1000,
+                height: 650,
+                content: `
+                    <div class="kde-toolbar">
+                        <button class="kde-btn"><i class="fas fa-arrow-left"></i></button>
+                        <button class="kde-btn"><i class="fas fa-arrow-right"></i></button>
+                        <button class="kde-btn" onclick="document.getElementById('browserFrame').src = document.getElementById('browserUrl').value"><i class="fas fa-redo"></i></button>
+                        <input class="kde-input" style="flex:1;margin:0 8px" id="browserUrl" value="https://www.google.com/webhp?igu=1" placeholder="Введите URL...">
+                        <button class="kde-btn" onclick="document.getElementById('browserFrame').src = document.getElementById('browserUrl').value"><i class="fas fa-arrow-right"></i> Перейти</button>
+                    </div>
+                    <iframe id="browserFrame" style="width:100%;height:calc(100% - 46px);border:none;background:white" src="https://www.google.com/webhp?igu=1"></iframe>
+                `,
+                appId: 'firefox'
+            });
+        }
+
+        // Calendar
+        function openCalendar() {
+            const now = new Date();
+            const month = now.getMonth();
+            const year = now.getFullYear();
+            const today = now.getDate();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+            
+            let days = [];
+            for (let i = 0; i < (firstDay || 7) - 1; i++) days.push('');
+            for (let i = 1; i <= daysInMonth; i++) days.push(i);
+            
+            createWindow({
+                title: 'Календарь',
+                icon: 'fa-calendar-alt',
+                width: 380,
+                height: 420,
+                content: `
+                    <div style="padding:20px;background:var(--plasma-bg);height:100%">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                            <button class="kde-btn"><i class="fas fa-chevron-left"></i></button>
+                            <span style="color:var(--plasma-text);font-size:18px;font-weight:500">${monthNames[month]} ${year}</span>
+                            <button class="kde-btn"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center">
+                            ${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d => `<div style="color:var(--plasma-text-secondary);font-size:12px;padding:8px;font-weight:500">${d}</div>`).join('')}
+                            ${days.map(d => `<div style="padding:10px;border-radius:8px;color:var(--plasma-text);${d === today ? 'background:var(--plasma-accent);font-weight:600' : ''};cursor:${d ? 'pointer' : 'default'};transition:background 0.15s" ${d ? 'onmouseover="if(!this.style.background.includes(\'accent\'))this.style.background=\'rgba(255,255,255,0.06)\'" onmouseout="if(!this.style.background.includes(\'accent\'))this.style.background=\'\'"' : ''}>${d}</div>`).join('')}
+                        </div>
+                    </div>
+                `,
+                appId: 'calendar'
+            });
+        }
+
+        // Weather
+        function openWeather() {
+            createWindow({
+                title: 'Погода',
+                icon: 'fa-cloud-sun',
+                width: 420,
+                height: 500,
+                content: `
+                    <div style="padding:30px;background:linear-gradient(135deg,#1a73e8,#0d47a1);height:100%;color:white">
+                        <div style="text-align:center;margin-bottom:30px">
+                            <i class="fas fa-sun" style="font-size:64px;color:#ffd54f;margin-bottom:16px"></i>
+                            <div style="font-size:52px;font-weight:300;margin-bottom:8px">23°C</div>
+                            <div style="font-size:18px;opacity:0.9">Ясно</div>
+                            <div style="font-size:14px;opacity:0.7;margin-top:4px"><i class="fas fa-map-marker-alt"></i> Москва, Россия</div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px">
+                            ${[{d:'Пн',i:'fa-cloud-sun',t:'20°'},{d:'Вт',i:'fa-cloud',t:'18°'},{d:'Ср',i:'fa-cloud-rain',t:'15°'},{d:'Чт',i:'fa-bolt',t:'14°'}].map(x => `
+                                <div style="background:rgba(255,255,255,0.15);padding:16px 8px;border-radius:12px;text-align:center">
+                                    <div style="font-size:12px;opacity:0.8">${x.d}</div>
+                                    <i class="fas ${x.i}" style="font-size:24px;margin:10px 0"></i>
+                                    <div style="font-size:16px;font-weight:500">${x.t}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                            <div style="background:rgba(255,255,255,0.15);padding:16px;border-radius:12px">
+                                <div style="font-size:12px;opacity:0.7"><i class="fas fa-tint"></i> Влажность</div>
+                                <div style="font-size:22px;font-weight:500;margin-top:4px">45%</div>
+                            </div>
+                            <div style="background:rgba(255,255,255,0.15);padding:16px;border-radius:12px">
+                                <div style="font-size:12px;opacity:0.7"><i class="fas fa-wind"></i> Ветер</div>
+                                <div style="font-size:22px;font-weight:500;margin-top:4px">12 км/ч</div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                appId: 'weather'
+            });
+        }
+
+        // System Monitor
+        function openSystemMonitor() {
+            createWindow({
+                title: 'Системный монитор',
+                icon: 'fa-chart-area',
+                width: 650,
+                height: 450,
+                content: `
+                    <div style="padding:20px;background:var(--plasma-bg);height:100%">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                            ${[
+                                {name:'CPU',val:'23%',color:'#3daee9',w:23},
+                                {name:'Память',val:'4.2 / 16 GB',color:'#27ae60',w:26},
+                                {name:'Диск',val:'120 / 500 GB',color:'#f39c12',w:24},
+                                {name:'Swap',val:'0 / 8 GB',color:'#9b59b6',w:0}
+                            ].map(x => `
+                                <div style="background:var(--plasma-surface);padding:20px;border-radius:10px">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+                                        <span style="color:var(--plasma-text-secondary);font-size:13px">${x.name}</span>
+                                        <span style="color:var(--plasma-text);font-size:13px">${x.val}</span>
+                                    </div>
+                                    <div style="height:8px;background:var(--plasma-bg);border-radius:4px;overflow:hidden">
+                                        <div style="width:${x.w}%;height:100%;background:${x.color};border-radius:4px;transition:width 0.5s"></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="background:var(--plasma-surface);padding:20px;border-radius:10px;margin-top:20px">
+                            <div style="color:var(--plasma-text-secondary);font-size:13px;margin-bottom:12px"><i class="fas fa-network-wired"></i> Сеть</div>
+                            <div style="display:flex;gap:40px">
+                                <div><span style="color:#27ae60"><i class="fas fa-arrow-down"></i></span> <span style="color:var(--plasma-text)">2.5 MB/s</span></div>
+                                <div><span style="color:#3daee9"><i class="fas fa-arrow-up"></i></span> <span style="color:var(--plasma-text)">0.8 MB/s</span></div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                appId: 'monitor'
+            });
+        }
+
+        // Elisa Music Player
+        function openElisa() {
+            createWindow({
+                title: 'Elisa',
+                icon: 'fa-music',
+                width: 480,
+                height: 380,
+                content: `
+                    <div style="padding:30px;background:linear-gradient(135deg,#8e24aa,#5e35b1);height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white">
+                        <div style="width:130px;height:130px;background:rgba(255,255,255,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;box-shadow:0 10px 40px rgba(0,0,0,0.3)">
+                            <i class="fas fa-music" style="font-size:50px"></i>
+                        </div>
+                        <div style="font-size:20px;font-weight:500;margin-bottom:6px">Демо трек</div>
+                        <div style="font-size:14px;opacity:0.7;margin-bottom:24px">Runget Music</div>
+                        <div style="width:100%;max-width:300px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin-bottom:8px">
+                            <div style="width:35%;height:100%;background:white;border-radius:2px"></div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;width:100%;max-width:300px;font-size:11px;opacity:0.7;margin-bottom:20px">
+                            <span>1:24</span><span>3:45</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:24px">
+                            <button style="background:none;border:none;color:white;font-size:20px;cursor:pointer;opacity:0.8"><i class="fas fa-step-backward"></i></button>
+                            <button style="width:56px;height:56px;border-radius:50%;background:white;border:none;color:#8e24aa;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.3)"><i class="fas fa-play"></i></button>
+                            <button style="background:none;border:none;color:white;font-size:20px;cursor:pointer;opacity:0.8"><i class="fas fa-step-forward"></i></button>
+                        </div>
+                    </div>
+                `,
+                appId: 'elisa'
+            });
+        }
+
+        // Gwenview
+        function openGwenview() {
+            createWindow({
+                title: 'Gwenview',
+                icon: 'fa-image',
+                width: 650,
+                height: 480,
+                content: `
+                    <div class="kde-toolbar">
+                        <button class="kde-btn"><i class="fas fa-folder-open"></i> Открыть</button>
+                        <button class="kde-btn"><i class="fas fa-search-plus"></i></button>
+                        <button class="kde-btn"><i class="fas fa-search-minus"></i></button>
+                    </div>
+                    <div style="padding:20px;background:var(--plasma-bg);height:calc(100% - 46px);display:flex;align-items:center;justify-content:center">
+                        <div style="text-align:center;color:var(--plasma-text-secondary)">
+                            <i class="fas fa-images" style="font-size:64px;margin-bottom:20px;opacity:0.4"></i>
+                            <div>Откройте изображение для просмотра</div>
+                        </div>
+                    </div>
+                `,
+                appId: 'gwenview'
+            });
+        }
+
+        // Okular
+        function openOkular() {
+            createWindow({
+                title: 'Okular',
+                icon: 'fa-file-pdf',
+                width: 650,
+                height: 520,
+                content: `
+                    <div class="kde-toolbar">
+                        <button class="kde-btn"><i class="fas fa-folder-open"></i> Открыть</button>
+                        <button class="kde-btn"><i class="fas fa-print"></i></button>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:center;height:calc(100% - 46px);background:var(--plasma-bg)">
+                        <div style="text-align:center;color:var(--plasma-text-secondary)">
+                            <i class="fas fa-file-pdf" style="font-size:64px;margin-bottom:20px;opacity:0.4"></i>
+                            <div>Откройте PDF документ</div>
+                        </div>
+                    </div>
+                `,
+                appId: 'okular'
+            });
+        }
+
+        // LibreOffice Writer
+        function openLibreOffice() {
+            createWindow({
+                title: 'LibreOffice Writer',
+                icon: 'fa-file-word',
+                width: 800,
+                height: 550,
+                content: `
+                    <div class="kde-toolbar">
+                        <button class="kde-btn"><i class="fas fa-file"></i> Новый</button>
+                        <button class="kde-btn"><i class="fas fa-folder-open"></i> Открыть</button>
+                        <button class="kde-btn"><i class="fas fa-save"></i> Сохранить</button>
+                        <div style="width:1px;height:24px;background:var(--plasma-border);margin:0 8px"></div>
+                        <button class="kde-btn"><i class="fas fa-bold"></i></button>
+                        <button class="kde-btn"><i class="fas fa-italic"></i></button>
+                        <button class="kde-btn"><i class="fas fa-underline"></i></button>
+                    </div>
+                    <div contenteditable="true" style="padding:40px 60px;background:white;color:#333;height:calc(100% - 46px);overflow-y:auto;font-family:serif;font-size:14px;line-height:1.8;outline:none">
+                        <h1 style="font-size:24px;margin-bottom:20px">Добро пожаловать в LibreOffice Writer</h1>
+                        <p>Начните вводить текст здесь...</p>
+                    </div>
+                `,
+                appId: 'libreoffice'
+            });
+        }
+
+        // Krita
+        function openKrita() {
+            const winId = createWindow({
+                title: 'Krita',
+                icon: 'fa-paint-brush',
+                width: 850,
+                height: 580,
+                content: `
+                    <div class="kde-toolbar">
+                        <input type="color" id="paintColor" value="#ffffff" style="width:36px;height:30px;border:none;border-radius:6px;cursor:pointer">
+                        <input type="range" id="paintSize" min="1" max="50" value="5" style="width:100px">
+                        <span style="color:var(--plasma-text);font-size:12px;min-width:40px" id="paintSizeLabel">5px</span>
+                        <button class="kde-btn" onclick="window.__clearCanvas()"><i class="fas fa-trash"></i> Очистить</button>
+                        <button class="kde-btn" onclick="window.__saveCanvas()"><i class="fas fa-save"></i> Сохранить</button>
+                    </div>
+                    <canvas id="paintCanvas" style="cursor:crosshair;display:block"></canvas>
+                `,
+                appId: 'krita'
+            });
+            
+            setTimeout(() => {
+                const canvas = document.getElementById('paintCanvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 848;
+                canvas.height = 488;
+                ctx.fillStyle = '#1b1e20';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                let drawing = false, lastX = 0, lastY = 0;
+                
+                canvas.onmousedown = (e) => { drawing = true; [lastX, lastY] = [e.offsetX, e.offsetY]; };
+                canvas.onmousemove = (e) => {
+                    if (!drawing) return;
+                    ctx.beginPath();
+                    ctx.strokeStyle = document.getElementById('paintColor').value;
+                    ctx.lineWidth = document.getElementById('paintSize').value;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                    ctx.stroke();
+                    [lastX, lastY] = [e.offsetX, e.offsetY];
+                };
+                canvas.onmouseup = () => drawing = false;
+                canvas.onmouseleave = () => drawing = false;
+                
+                document.getElementById('paintSize').oninput = (e) => {
+                    document.getElementById('paintSizeLabel').textContent = e.target.value + 'px';
+                };
+                
+                window.__clearCanvas = () => { ctx.fillStyle = '#1b1e20'; ctx.fillRect(0, 0, canvas.width, canvas.height); };
+                window.__saveCanvas = () => {
+                    const a = document.createElement('a');
+                    a.href = canvas.toDataURL('image/png');
+                    a.download = 'artwork.png';
+                    a.click();
+                    showNotification('Изображение сохранено', 'success');
+                };
+            }, 50);
+        }
+
+        // Snake Game
+        function openSnake() {
+            const winId = createWindow({
+                title: 'Змейка',
+                icon: 'fa-gamepad',
+                width: 440,
+                height: 520,
+                content: `
+                    <div style="padding:16px;background:var(--plasma-bg);height:100%;display:flex;flex-direction:column;align-items:center">
+                        <div style="display:flex;justify-content:space-between;width:100%;margin-bottom:12px;align-items:center">
+                            <span style="color:var(--plasma-text)"><i class="fas fa-star"></i> Счёт: <span id="snakeScore">0</span></span>
+                            <button class="kde-btn" onclick="window.__startSnake()"><i class="fas fa-play"></i> Старт</button>
+                        </div>
+                        <canvas id="snakeCanvas" width="400" height="400" style="background:var(--plasma-surface);border-radius:10px"></canvas>
+                        <div style="color:var(--plasma-text-secondary);font-size:12px;margin-top:12px"><i class="fas fa-keyboard"></i> Используйте стрелки для управления</div>
+                    </div>
+                `,
+                appId: 'snake'
+            });
+            
+            const canvas = document.getElementById('snakeCanvas');
+            const ctx = canvas.getContext('2d');
+            const size = 20;
+            let snake, food, dir, score, loop;
+            
+            function init() {
+                snake = [{x:10,y:10}];
+                dir = {x:1,y:0};
+                score = 0;
+                placeFood();
+                document.getElementById('snakeScore').textContent = score;
+            }
+            
+            function placeFood() {
+                food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
+            }
+            
+            function draw() {
+                ctx.fillStyle = '#232629';
+                ctx.fillRect(0, 0, 400, 400);
+                
+                // Draw grid
+                ctx.strokeStyle = '#2a2e32';
+                for (let i = 0; i <= 20; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i * size, 0);
+                    ctx.lineTo(i * size, 400);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, i * size);
+                    ctx.lineTo(400, i * size);
+                    ctx.stroke();
+                }
+                
+                snake.forEach((s, i) => {
+                    ctx.fillStyle = i === 0 ? '#27ae60' : '#2ecc71';
+                    ctx.beginPath();
+                    ctx.roundRect(s.x * size + 1, s.y * size + 1, size - 2, size - 2, 4);
+                    ctx.fill();
+                });
+                
+                ctx.fillStyle = '#e74c3c';
+                ctx.beginPath();
+                ctx.arc(food.x * size + size/2, food.y * size + size/2, size/2 - 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            function update() {
+                const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+                if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(s => s.x === head.x && s.y === head.y)) {
+                    clearInterval(loop);
+                    showNotification(`Игра окончена! Счёт: ${score}`, 'info');
+                    return;
+                }
+                snake.unshift(head);
+                if (head.x === food.x && head.y === food.y) {
+                    score++;
+                    document.getElementById('snakeScore').textContent = score;
+                    placeFood();
+                } else {
+                    snake.pop();
+                }
+                draw();
+            }
+            
+            document.addEventListener('keydown', (e) => {
+                if (!document.getElementById(`window-${winId}`)) return;
+                const dirs = { ArrowUp:{x:0,y:-1}, ArrowDown:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, ArrowRight:{x:1,y:0} };
+                if (dirs[e.key] && (dirs[e.key].x !== -dir.x || dirs[e.key].y !== -dir.y)) {
+                    e.preventDefault();
+                    dir = dirs[e.key];
+                }
+            });
+            
+            window.__startSnake = () => {
+                clearInterval(loop);
+                init();
+                draw();
+                loop = setInterval(update, 100);
+            };
+            
+            init();
+            draw();
+        }
+
+        // Tasks
+        function openTasks() {
+            let tasks = JSON.parse(localStorage.getItem('runget-tasks') || '[]');
+            
+            function render() {
+                return `
+                    <div style="padding:20px;background:var(--plasma-bg);height:100%">
+                        <div style="display:flex;gap:10px;margin-bottom:20px">
+                            <input class="kde-input" style="flex:1" id="taskInput" placeholder="Новая задача...">
+                            <button class="kde-btn" onclick="window.__addTask()"><i class="fas fa-plus"></i> Добавить</button>
+                        </div>
+                        <div id="tasksList" style="display:flex;flex-direction:column;gap:10px">
+                            ${tasks.map((t, i) => `
+                                <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--plasma-surface);border-radius:8px">
+                                    <input type="checkbox" ${t.done ? 'checked' : ''} onchange="window.__toggleTask(${i})" style="width:20px;height:20px;accent-color:var(--plasma-accent)">
+                                    <span style="flex:1;color:var(--plasma-text);${t.done ? 'text-decoration:line-through;opacity:0.5' : ''}">${t.text}</span>
+                                    <button style="background:none;border:none;color:var(--plasma-danger);cursor:pointer;font-size:16px;padding:4px" onclick="window.__removeTask(${i})"><i class="fas fa-trash"></i></button>
+                                </div>
+                            `).join('')}
+                            ${tasks.length === 0 ? '<div style="text-align:center;color:var(--plasma-text-secondary);padding:50px"><i class="fas fa-check-circle" style="font-size:48px;margin-bottom:16px;display:block;opacity:0.4"></i>Нет задач</div>' : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            const winId = createWindow({ title: 'Задачи', icon: 'fa-tasks', width: 450, height: 480, content: render(), appId: 'tasks' });
+            
+            const save = () => localStorage.setItem('runget-tasks', JSON.stringify(tasks));
+            const refresh = () => { document.querySelector(`#window-${winId} .window-content`).innerHTML = render(); };
+            
+            window.__addTask = () => {
+                const input = document.getElementById('taskInput');
+                if (input.value.trim()) {
+                    tasks.push({ text: input.value.trim(), done: false });
+                    save(); refresh();
+                }
+            };
+            window.__toggleTask = (i) => { tasks[i].done = !tasks[i].done; save(); refresh(); };
+            window.__removeTask = (i) => { tasks.splice(i, 1); save(); refresh(); };
+        }
+
+        // Discover
+        function openDiscover() {
+            createWindow({
+                title: 'Discover',
+                icon: 'fa-store',
+                width: 850,
+                height: 550,
+                content: `
+                    <div class="kde-toolbar">
+                        <input class="kde-input" style="flex:1" placeholder="Поиск приложений...">
+                        <button class="kde-btn"><i class="fas fa-sync"></i> Обновить</button>
+                    </div>
+                    <div style="padding:20px;background:var(--plasma-bg);height:calc(100% - 46px);overflow-y:auto">
+                        <h3 style="color:var(--plasma-text);margin-bottom:16px"><i class="fas fa-star"></i> Рекомендуемые</h3>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+                            ${[
+                                {name:'Firefox',icon:'fa-firefox-browser',desc:'Веб-браузер',fab:true},
+                                {name:'LibreOffice',icon:'fa-file-word',desc:'Офисный пакет'},
+                                {name:'GIMP',icon:'fa-paint-brush',desc:'Редактор изображений'},
+                                {name:'VLC',icon:'fa-play-circle',desc:'Медиаплеер'},
+                                {name:'Telegram',icon:'fa-telegram',desc:'Мессенджер',fab:true},
+                                {name:'VS Code',icon:'fa-code',desc:'Редактор кода'}
+                            ].map(a => `
+                                <div style="background:var(--plasma-surface);padding:20px;border-radius:10px;display:flex;gap:16px;align-items:center">
+                                    <i class="${a.fab?'fab':'fas'} ${a.icon}" style="font-size:36px;color:var(--plasma-accent);width:45px"></i>
+                                    <div style="flex:1">
+                                        <div style="color:var(--plasma-text);font-weight:500">${a.name}</div>
+                                        <div style="color:var(--plasma-text-secondary);font-size:12px">${a.desc}</div>
+                                    </div>
+                                    <button class="kde-btn" style="font-size:11px">Установить</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `,
+                appId: 'discover'
+            });
+        }
+
+        // Start boot
+        boot();
+    </script>
+</body>
+</html>
