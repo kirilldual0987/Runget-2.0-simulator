@@ -6,6 +6,7 @@
     <title>Runget 2.0 - Легкая, быстрая, простая и красивая ОС</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -37,7 +38,6 @@
             background: var(--plasma-bg);
         }
 
-        /* 3D R Logo */
         .logo-3d-r {
             display: inline-flex;
             align-items: center;
@@ -45,27 +45,6 @@
             font-family: 'Arial Black', 'Segoe UI', sans-serif;
             font-weight: 900;
             color: #fff;
-            text-shadow: 
-                0 1px 0 #ccc,
-                0 2px 0 #c9c9c9,
-                0 3px 0 #bbb,
-                0 4px 0 #b9b9b9,
-                0 5px 0 #aaa,
-                0 6px 1px rgba(0,0,0,.1),
-                0 0 5px rgba(0,0,0,.1),
-                0 1px 3px rgba(0,0,0,.3),
-                0 3px 5px rgba(0,0,0,.2),
-                0 5px 10px rgba(0,0,0,.25),
-                0 10px 10px rgba(0,0,0,.2),
-                0 20px 20px rgba(0,0,0,.15);
-            background: linear-gradient(135deg, #3daee9 0%, #2980b9 50%, #1a5276 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4));
-        }
-
-        .logo-3d-r-gradient {
             background: linear-gradient(180deg, #5dade2 0%, #3daee9 30%, #2874a6 70%, #1a5276 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -97,10 +76,6 @@
 
         .boot-logo .logo-3d-r {
             font-size: 100px;
-            background: linear-gradient(180deg, #5dade2 0%, #3daee9 30%, #2874a6 70%, #1a5276 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
             filter: drop-shadow(4px 6px 10px rgba(61, 174, 233, 0.4));
         }
 
@@ -242,8 +217,7 @@
         #desktopWallpaper {
             position: absolute;
             inset: 0;
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d1b4e 50%, #1a1a2e 100%);
             z-index: 0;
         }
 
@@ -251,8 +225,8 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(2, 85px);
             gap: 5px;
             padding: 5px;
             z-index: 1;
@@ -333,11 +307,6 @@
 
         #appLauncher .logo-3d-r {
             font-size: 26px;
-            background: linear-gradient(180deg, #5dade2 0%, #3daee9 50%, #2874a6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.3));
         }
 
         #taskManager {
@@ -347,6 +316,7 @@
             gap: 3px;
             height: 100%;
             padding: 4px 0;
+            overflow-x: auto;
         }
 
         .task-item {
@@ -361,6 +331,7 @@
             transition: all 0.15s;
             border: 1px solid transparent;
             max-width: 200px;
+            flex-shrink: 0;
         }
 
         .task-item:hover {
@@ -409,10 +380,6 @@
 
         .tray-icon:hover {
             background: rgba(255,255,255,0.1);
-        }
-
-        .tray-icon i {
-            font-size: 14px;
         }
 
         #clockWidget {
@@ -707,17 +674,9 @@
             color: rgba(0,0,0,0.7);
         }
 
-        .window-btn-minimize {
-            background: #f1c40f;
-        }
-
-        .window-btn-maximize {
-            background: #2ecc71;
-        }
-
-        .window-btn-close {
-            background: #e74c3c;
-        }
+        .window-btn-minimize { background: #f1c40f; }
+        .window-btn-maximize { background: #2ecc71; }
+        .window-btn-close { background: #e74c3c; }
 
         .window-content {
             flex: 1;
@@ -785,6 +744,7 @@
             flex-direction: column;
             gap: 10px;
             z-index: 6000;
+            pointer-events: none;
         }
 
         .notification {
@@ -799,18 +759,11 @@
             display: flex;
             align-items: center;
             gap: 14px;
+            pointer-events: auto;
         }
 
-        .notification-icon {
-            font-size: 22px;
-        }
-
-        .notification-text {
-            color: var(--plasma-text);
-            font-size: 13px;
-            flex: 1;
-        }
-
+        .notification-icon { font-size: 22px; }
+        .notification-text { color: var(--plasma-text); font-size: 13px; flex: 1; }
         .notification-close {
             color: var(--plasma-text-secondary);
             cursor: pointer;
@@ -818,10 +771,7 @@
             border-radius: 6px;
             transition: background 0.15s;
         }
-
-        .notification-close:hover {
-            background: rgba(255,255,255,0.1);
-        }
+        .notification-close:hover { background: rgba(255,255,255,0.1); }
 
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
@@ -829,24 +779,10 @@
         }
 
         /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--plasma-bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--plasma-border);
-            border-radius: 5px;
-            border: 2px solid var(--plasma-bg);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--plasma-text-secondary);
-        }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--plasma-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--plasma-border); border-radius: 5px; border: 2px solid var(--plasma-bg); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--plasma-text-secondary); }
 
         /* KDE App Styles */
         .kde-toolbar {
@@ -856,6 +792,7 @@
             align-items: center;
             gap: 6px;
             border-bottom: 1px solid var(--plasma-border);
+            flex-wrap: wrap;
         }
 
         .kde-btn {
@@ -877,9 +814,7 @@
             border-color: var(--plasma-accent);
         }
 
-        .kde-btn i {
-            font-size: 12px;
-        }
+        .kde-btn i { font-size: 12px; }
 
         .kde-input {
             padding: 9px 14px;
@@ -927,19 +862,9 @@
             transition: background 0.15s;
         }
 
-        .dolphin-place:hover {
-            background: rgba(255,255,255,0.06);
-        }
-
-        .dolphin-place.active {
-            background: var(--plasma-accent);
-        }
-
-        .dolphin-place i {
-            font-size: 16px;
-            width: 20px;
-            text-align: center;
-        }
+        .dolphin-place:hover { background: rgba(255,255,255,0.06); }
+        .dolphin-place.active { background: var(--plasma-accent); }
+        .dolphin-place i { font-size: 16px; width: 20px; text-align: center; }
 
         .dolphin-content {
             flex: 1;
@@ -959,13 +884,8 @@
             transition: background 0.15s;
         }
 
-        .dolphin-item:hover {
-            background: rgba(255,255,255,0.06);
-        }
-
-        .dolphin-item.selected {
-            background: rgba(61,174,233,0.3);
-        }
+        .dolphin-item:hover { background: rgba(255,255,255,0.06); }
+        .dolphin-item.selected { background: rgba(61,174,233,0.3); }
 
         .dolphin-item-icon {
             font-size: 44px;
@@ -976,16 +896,8 @@
             justify-content: center;
         }
 
-        .dolphin-item-icon i {
-            font-size: 40px;
-        }
-
-        .dolphin-item-name {
-            color: var(--plasma-text);
-            font-size: 11px;
-            word-break: break-word;
-            line-height: 1.3;
-        }
+        .dolphin-item-icon i { font-size: 40px; }
+        .dolphin-item-name { color: var(--plasma-text); font-size: 11px; word-break: break-word; line-height: 1.3; }
 
         /* Terminal Konsole */
         .konsole {
@@ -998,22 +910,9 @@
             overflow-y: auto;
         }
 
-        .konsole-line {
-            margin-bottom: 3px;
-            white-space: pre-wrap;
-            word-break: break-all;
-            line-height: 1.5;
-        }
-
-        .konsole-prompt {
-            color: #26a269;
-            font-weight: 600;
-        }
-
-        .konsole-path {
-            color: #3daee9;
-        }
-
+        .konsole-line { margin-bottom: 3px; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
+        .konsole-prompt { color: #26a269; font-weight: 600; }
+        .konsole-path { color: #3daee9; }
         .konsole-input {
             background: transparent;
             border: none;
@@ -1025,7 +924,7 @@
             caret-color: #3daee9;
         }
 
-        /* System Settings */
+        /* Settings */
         .settings-sidebar {
             width: 240px;
             background: var(--plasma-surface);
@@ -1033,11 +932,7 @@
             overflow-y: auto;
         }
 
-        .settings-section {
-            padding: 8px;
-            border-bottom: 1px solid var(--plasma-border);
-        }
-
+        .settings-section { padding: 8px; border-bottom: 1px solid var(--plasma-border); }
         .settings-section-title {
             color: var(--plasma-text-secondary);
             font-size: 11px;
@@ -1059,55 +954,18 @@
             transition: background 0.15s;
         }
 
-        .settings-item:hover {
-            background: rgba(255,255,255,0.06);
-        }
+        .settings-item:hover { background: rgba(255,255,255,0.06); }
+        .settings-item.active { background: var(--plasma-accent); }
+        .settings-item i { font-size: 16px; width: 20px; text-align: center; }
 
-        .settings-item.active {
-            background: var(--plasma-accent);
-        }
-
-        .settings-item i {
-            font-size: 16px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .settings-content {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-        }
-
-        .settings-title {
-            color: var(--plasma-text);
-            font-size: 22px;
-            font-weight: 500;
-            margin-bottom: 24px;
-        }
+        .settings-content { flex: 1; padding: 24px; overflow-y: auto; }
+        .settings-title { color: var(--plasma-text); font-size: 22px; font-weight: 500; margin-bottom: 24px; }
 
         /* About System */
-        .about-logo {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .about-logo .logo-3d-r {
-            font-size: 80px;
-            margin-bottom: 16px;
-            display: inline-block;
-        }
-
-        .about-title {
-            font-size: 28px;
-            color: var(--plasma-text);
-            margin-bottom: 6px;
-        }
-
-        .about-subtitle {
-            color: var(--plasma-accent);
-            font-size: 14px;
-        }
+        .about-logo { text-align: center; margin-bottom: 24px; }
+        .about-logo .logo-3d-r { font-size: 80px; margin-bottom: 16px; display: inline-block; }
+        .about-title { font-size: 28px; color: var(--plasma-text); margin-bottom: 6px; }
+        .about-subtitle { color: var(--plasma-accent); font-size: 14px; }
 
         .about-info {
             background: var(--plasma-surface);
@@ -1123,30 +981,54 @@
             border-bottom: 1px solid var(--plasma-border);
         }
 
-        .about-row:last-child {
-            border-bottom: none;
+        .about-row:last-child { border-bottom: none; }
+        .about-label { color: var(--plasma-text-secondary); }
+        .about-value { color: var(--plasma-text); text-align: right; }
+
+        /* Game styles */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background: var(--plasma-bg);
+            padding: 20px;
         }
 
-        .about-label {
-            color: var(--plasma-text-secondary);
+        .game-canvas {
+            border: 2px solid var(--plasma-border);
+            border-radius: 8px;
+            background: #1a1a2e;
         }
 
-        .about-value {
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 15px;
             color: var(--plasma-text);
-            text-align: right;
+        }
+
+        .game-score { font-size: 18px; font-weight: 600; }
+        .game-controls { margin-top: 15px; display: flex; gap: 10px; }
+
+        /* Wallpaper selector */
+        .wallpaper-item:hover {
+            border-color: var(--plasma-accent) !important;
+            opacity: 0.9;
+            transform: scale(1.02);
+            transition: all 0.2s ease;
         }
     </style>
 </head>
 <body>
     <!-- Boot Screen -->
     <div id="bootScreen">
-        <div class="boot-logo">
-            <span class="logo-3d-r logo-3d-r-gradient">R</span>
-        </div>
+        <div class="boot-logo"><span class="logo-3d-r">R</span></div>
         <div class="boot-text">Runget 2.0</div>
-        <div class="boot-spinner">
-            <div class="boot-spinner-bar" id="bootProgress"></div>
-        </div>
+        <div class="boot-spinner"><div class="boot-spinner-bar" id="bootProgress"></div></div>
         <div class="boot-status" id="bootStatus">Инициализация системы...</div>
     </div>
 
@@ -1169,17 +1051,14 @@
         <div id="desktopIcons"></div>
         <div id="windowsContainer"></div>
 
-        <!-- Panel -->
         <div id="panel">
-            <div id="appLauncher">
-                <span class="logo-3d-r">R</span>
-            </div>
+            <div id="appLauncher"><span class="logo-3d-r">R</span></div>
             <div id="taskManager"></div>
             <div id="systemTray">
                 <div class="tray-icon" title="Сеть"><i class="fas fa-wifi"></i></div>
                 <div class="tray-icon" title="Звук"><i class="fas fa-volume-up"></i></div>
                 <div class="tray-icon" title="Батарея"><i class="fas fa-battery-three-quarters"></i></div>
-                <div class="tray-icon" title="Уведомления"><i class="fas fa-bell"></i></div>
+                <div class="tray-icon" onclick="openApp('spectacle')" title="Скриншот"><i class="fas fa-camera"></i></div>
             </div>
             <div id="clockWidget">
                 <div id="clockTime"></div>
@@ -1187,41 +1066,20 @@
             </div>
         </div>
 
-        <!-- Application Menu -->
         <div id="appMenu">
             <div class="app-menu-header">
                 <input type="text" class="app-menu-search" id="appSearch" placeholder="Поиск приложений...">
             </div>
             <div class="app-menu-content">
                 <div class="app-menu-sidebar">
-                    <div class="app-menu-category active" data-category="all">
-                        <i class="fas fa-th-large"></i>
-                        Все приложения
-                    </div>
-                    <div class="app-menu-category" data-category="system">
-                        <i class="fas fa-cog"></i>
-                        Система
-                    </div>
-                    <div class="app-menu-category" data-category="utilities">
-                        <i class="fas fa-tools"></i>
-                        Утилиты
-                    </div>
-                    <div class="app-menu-category" data-category="office">
-                        <i class="fas fa-file-alt"></i>
-                        Офис
-                    </div>
-                    <div class="app-menu-category" data-category="multimedia">
-                        <i class="fas fa-photo-video"></i>
-                        Мультимедиа
-                    </div>
-                    <div class="app-menu-category" data-category="internet">
-                        <i class="fas fa-globe"></i>
-                        Интернет
-                    </div>
-                    <div class="app-menu-category" data-category="games">
-                        <i class="fas fa-gamepad"></i>
-                        Игры
-                    </div>
+                    <div class="app-menu-category active" data-category="all"><i class="fas fa-th-large"></i> Все приложения</div>
+                    <div class="app-menu-category" data-category="system"><i class="fas fa-cog"></i> Система</div>
+                    <div class="app-menu-category" data-category="utilities"><i class="fas fa-tools"></i> Утилиты</div>
+                    <div class="app-menu-category" data-category="office"><i class="fas fa-file-alt"></i> Офис</div>
+                    <div class="app-menu-category" data-category="multimedia"><i class="fas fa-photo-video"></i> Мультимедиа</div>
+                    <div class="app-menu-category" data-category="internet"><i class="fas fa-globe"></i> Интернет</div>
+                    <div class="app-menu-category" data-category="games"><i class="fas fa-gamepad"></i> Игры</div>
+                    <div class="app-menu-category" data-category="benchmark"><i class="fas fa-tachometer-alt"></i> Тесты</div>
                 </div>
                 <div class="app-menu-apps" id="appMenuApps"></div>
             </div>
@@ -1232,16 +1090,13 @@
                 </div>
                 <div class="app-menu-power">
                     <div class="app-menu-power-btn" onclick="lockScreen()" title="Заблокировать"><i class="fas fa-lock"></i></div>
-                    <div class="app-menu-power-btn" onclick="if(confirm('Выйти из системы?')) location.reload()" title="Выход"><i class="fas fa-sign-out-alt"></i></div>
-                    <div class="app-menu-power-btn danger" onclick="if(confirm('Выключить систему?')) location.reload()" title="Выключение"><i class="fas fa-power-off"></i></div>
+                    <div class="app-menu-power-btn" onclick="location.reload()" title="Перезагрузка"><i class="fas fa-redo"></i></div>
+                    <div class="app-menu-power-btn danger" onclick="document.body.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#fff;font-size:24px\'>Система выключена</div>'" title="Выключение"><i class="fas fa-power-off"></i></div>
                 </div>
             </div>
         </div>
 
-        <!-- Context Menu -->
         <div id="contextMenu"></div>
-
-        <!-- Notifications -->
         <div id="notifications"></div>
     </div>
 
@@ -1267,11 +1122,11 @@
                         'user': { type: 'folder', children: {
                             'Документы': { type: 'folder', children: {
                                 'readme.txt': { type: 'file', content: 'Добро пожаловать в Runget 2.0!\n\nЭто быстрая, простая и красивая операционная система.\nОснована на Debian и Ubuntu.\n\nРазработчики:\n- Kolyadual\n- Kirilldual\n- Seregaosm\n- Neeby' },
-                                'notes.txt': { type: 'file', content: 'Мои заметки\n\n- Изучить Runget 2.0\n- Настроить систему\n- Попробовать все приложения' }
+                                'notes.txt': { type: 'file', content: 'Мои заметки\n\n- Изучить Runget 2.0\n- Настроить систему' }
                             }},
                             'Загрузки': { type: 'folder', children: {} },
                             'Изображения': { type: 'folder', children: {
-                                'wallpaper.txt': { type: 'file', content: 'Информация об обоях Runget' }
+                                'screenshot.png': { type: 'file', content: '[Изображение]' }
                             }},
                             'Музыка': { type: 'folder', children: {} },
                             'Видео': { type: 'folder', children: {} },
@@ -1279,40 +1134,45 @@
                         }}
                     }},
                     'etc': { type: 'folder', children: {
-                        'os-release': { type: 'file', content: 'PRETTY_NAME="Runget 2.0 (Anythink Anywhere)"\nNAME="Runget"\nVERSION_ID="2.0"\nVERSION="2.0 (Anythink Anywhere)"\nVERSION_CODENAME=anythink\nID=runget\nID_LIKE="debian ubuntu"\nHOME_URL="https://t.me/runget_rt"\nSUPPORT_URL="https://t.me/runget_rt"\nBUG_REPORT_URL="runget.feedback@gmail.com"' },
-                        'hostname': { type: 'file', content: 'runget-pc' }
+                        'os-release': { type: 'file', content: 'PRETTY_NAME="Runget 2.0 (Anythink Anywhere)"\nNAME="Runget"\nVERSION_ID="2.0"\nVERSION="2.0 (Anythink Anywhere)"\nID=runget\nID_LIKE="debian ubuntu"\nHOME_URL="https://t.me/runget_rt"' }
                     }},
-                    'usr': { type: 'folder', children: {
-                        'share': { type: 'folder', children: {} }
-                    }},
-                    'var': { type: 'folder', children: {
-                        'log': { type: 'folder', children: {} }
-                    }}
+                    'usr': { type: 'folder', children: {} },
+                    'var': { type: 'folder', children: {} }
                 }}
             },
             
-            settings: {
-                wallpaper: 0,
-                theme: 'breeze-dark'
-            }
+            settings: { wallpaper: 0 }
         };
 
         const wallpapers = [
-            { name: 'Runget Default', url: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920', gradient: 'linear-gradient(135deg, #1e3a5f 0%, #2d1b4e 50%, #1a1a2e 100%)' },
-            { name: 'Mountain Dawn', url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920', gradient: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)' },
-            { name: 'Northern Lights', url: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1920', gradient: 'linear-gradient(135deg, #141e30 0%, #243b55 100%)' },
-            { name: 'Night Sky', url: 'https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920', gradient: 'linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%)' },
-            { name: 'Ocean Blue', url: 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1920', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' },
-            { name: 'Forest Green', url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920', gradient: 'linear-gradient(135deg, #0d1f22 0%, #1a3a2a 100%)' }
+            { name: 'Runget Default', gradient: 'linear-gradient(135deg, #1e3a5f 0%, #2d1b4e 50%, #1a1a2e 100%)' },
+            { name: 'Ocean Depths', gradient: 'linear-gradient(135deg, #0c3547 0%, #0d47a1 50%, #1565c0 100%)' },
+            { name: 'Aurora Borealis', gradient: 'linear-gradient(135deg, #1a237e 0%, #00695c 50%, #004d40 100%)' },
+            { name: 'Sunset Glow', gradient: 'linear-gradient(135deg, #4a148c 0%, #880e4f 50%, #e65100 100%)' },
+            { name: 'Forest Night', gradient: 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 30%, #0d1b0d 100%)' },
+            { name: 'Crimson Twilight', gradient: 'linear-gradient(135deg, #4a0000 0%, #8e0000 50%, #1a0a0a 100%)' },
+            { name: 'Purple Nebula', gradient: 'linear-gradient(135deg, #311b92 0%, #7b1fa2 50%, #4a148c 100%)' },
+            { name: 'Arctic Blue', gradient: 'linear-gradient(135deg, #006064 0%, #00838f 50%, #0097a7 100%)' },
+            { name: 'Dark Matter', gradient: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a2e 50%, #0f0f23 100%)' },
+            { name: 'Golden Hour', gradient: 'linear-gradient(135deg, #bf360c 0%, #f57c00 50%, #ff8f00 100%)' },
+            { name: 'Deep Space', gradient: 'linear-gradient(135deg, #000428 0%, #004e92 100%)' },
+            { name: 'Emerald Dream', gradient: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)' },
+            { name: 'Midnight City', gradient: 'linear-gradient(135deg, #232526 0%, #414345 100%)' },
+            { name: 'Royal Purple', gradient: 'linear-gradient(135deg, #141e30 0%, #243b55 50%, #4b134f 100%)' },
+            { name: 'Plasma Blue', gradient: 'linear-gradient(135deg, #3daee9 0%, #2980b9 50%, #1a5276 100%)' },
+            { name: 'Volcanic', gradient: 'linear-gradient(135deg, #200122 0%, #6f0000 100%)' }
         ];
 
         const apps = [
             { id: 'dolphin', name: 'Dolphin', icon: 'fa-folder', category: 'system', desktop: true },
             { id: 'konsole', name: 'Konsole', icon: 'fa-terminal', category: 'system', desktop: true },
             { id: 'kate', name: 'Kate', icon: 'fa-file-code', category: 'utilities', desktop: true },
-            { id: 'settings', name: 'Параметры системы', icon: 'fa-cog', category: 'system', desktop: true },
+            { id: 'settings', name: 'Параметры', icon: 'fa-cog', category: 'system', desktop: true },
             { id: 'info', name: 'О системе', icon: 'fa-info-circle', category: 'system', desktop: true },
             { id: 'dgc', name: 'DGC', icon: 'fa-gamepad', category: 'games', desktop: true },
+            { id: 'speedtest', name: 'Speedtest', icon: 'fa-tachometer-alt', category: 'benchmark', desktop: true },
+            { id: 'speedtest-light', name: 'Speedtest Light', icon: 'fa-bolt', category: 'benchmark', desktop: true },
+            { id: '3d-benchmark', name: '3D Benchmark', icon: 'fa-cube', category: 'benchmark', desktop: true },
             { id: 'calculator', name: 'Калькулятор', icon: 'fa-calculator', category: 'utilities', desktop: false },
             { id: 'spectacle', name: 'Spectacle', icon: 'fa-camera', category: 'utilities', desktop: false },
             { id: 'gwenview', name: 'Gwenview', icon: 'fa-image', category: 'multimedia', desktop: false },
@@ -1321,12 +1181,18 @@
             { id: 'calendar', name: 'Календарь', icon: 'fa-calendar-alt', category: 'utilities', desktop: false },
             { id: 'weather', name: 'Погода', icon: 'fa-cloud-sun', category: 'utilities', desktop: false },
             { id: 'monitor', name: 'Системный монитор', icon: 'fa-chart-area', category: 'system', desktop: false },
-            { id: 'firefox', name: 'Firefox', icon: 'fa-firefox-browser', iconType: 'fab', category: 'internet', desktop: true },
+            { id: 'firefox', name: 'Firefox', icon: 'fa-firefox-browser', iconType: 'fab', category: 'internet', desktop: false },
             { id: 'krita', name: 'Krita', icon: 'fa-paint-brush', category: 'multimedia', desktop: false },
-            { id: 'libreoffice', name: 'LibreOffice Writer', icon: 'fa-file-word', category: 'office', desktop: false },
+            { id: 'libreoffice', name: 'LibreOffice', icon: 'fa-file-word', category: 'office', desktop: false },
             { id: 'snake', name: 'Змейка', icon: 'fa-gamepad', category: 'games', desktop: false },
+            { id: 'tetris', name: 'Тетрис', icon: 'fa-th', category: 'games', desktop: false },
+            { id: 'pong', name: 'Пинг-понг', icon: 'fa-table-tennis', category: 'games', desktop: false },
+            { id: 'game2048', name: '2048', icon: 'fa-th-large', category: 'games', desktop: false },
+            { id: 'minesweeper', name: 'Сапёр', icon: 'fa-bomb', category: 'games', desktop: false },
+            { id: 'tictactoe', name: 'Крестики-нолики', icon: 'fa-times', category: 'games', desktop: false },
             { id: 'tasks', name: 'Задачи', icon: 'fa-tasks', category: 'utilities', desktop: false },
-            { id: 'discover', name: 'Discover', icon: 'fa-store', category: 'system', desktop: false }
+            { id: 'notes', name: 'Заметки', icon: 'fa-sticky-note', category: 'utilities', desktop: false },
+            { id: 'clock', name: 'Часы', icon: 'fa-clock', category: 'utilities', desktop: false }
         ];
 
         // ==================== BOOT ====================
@@ -1342,10 +1208,10 @@
                 'Загрузка рабочего стола...'
             ];
             
-            for (let i = 0; i <= 100; i += 1) {
+            for (let i = 0; i <= 100; i++) {
                 progress.style.width = i + '%';
                 if (i % 18 === 0) status.textContent = messages[Math.floor(i / 18)] || messages[messages.length - 1];
-                await new Promise(r => setTimeout(r, 30));
+                await new Promise(r => setTimeout(r, 25));
             }
             
             document.getElementById('bootScreen').style.display = 'none';
@@ -1356,8 +1222,7 @@
         function updateLockTime() {
             const now = new Date();
             document.getElementById('lockTime').textContent = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-            const dateStr = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('lockDate').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+            document.getElementById('lockDate').textContent = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         }
         setInterval(updateLockTime, 1000);
 
@@ -1383,7 +1248,11 @@
             renderAppMenu();
             updateClock();
             setInterval(updateClock, 1000);
-            applyWallpaper();
+            
+            // Применяем обои с небольшой задержкой для уверенности
+            setTimeout(() => {
+                applyWallpaper();
+            }, 100);
             
             document.getElementById('appLauncher').onclick = toggleAppMenu;
             document.getElementById('clockWidget').onclick = () => openApp('calendar');
@@ -1401,6 +1270,13 @@
                     showContextMenu(e.clientX, e.clientY);
                 }
             });
+            
+            // Дополнительно загружаем сохранённые настройки из localStorage
+            const savedWallpaper = localStorage.getItem('runget-wallpaper');
+            if (savedWallpaper !== null) {
+                Runget.settings.wallpaper = parseInt(savedWallpaper);
+                applyWallpaper();
+            }
         }
 
         function updateClock() {
@@ -1457,8 +1333,7 @@
             document.getElementById('appSearch').oninput = (e) => {
                 const query = e.target.value.toLowerCase();
                 document.querySelectorAll('.app-menu-item').forEach(item => {
-                    const name = item.querySelector('.app-menu-item-name').textContent.toLowerCase();
-                    item.style.display = name.includes(query) ? 'block' : 'none';
+                    item.style.display = item.querySelector('.app-menu-item-name').textContent.toLowerCase().includes(query) ? 'block' : 'none';
                 });
             };
         }
@@ -1466,18 +1341,16 @@
         function toggleAppMenu() {
             const menu = document.getElementById('appMenu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-            if (menu.style.display === 'block') {
-                document.getElementById('appSearch').focus();
-            }
+            if (menu.style.display === 'block') document.getElementById('appSearch').focus();
         }
 
         function applyWallpaper() {
-            const wp = wallpapers[Runget.settings.wallpaper];
-            const el = document.getElementById('desktopWallpaper');
-            el.style.background = wp.gradient;
-            const img = new Image();
-            img.onload = () => { el.style.background = `url('${wp.url}') center/cover`; };
-            img.src = wp.url;
+            const wallpaper = wallpapers[Runget.settings.wallpaper];
+            const desktopWallpaper = document.getElementById('desktopWallpaper');
+            if (desktopWallpaper && wallpaper) {
+                desktopWallpaper.style.background = wallpaper.gradient;
+                localStorage.setItem('runget-wallpaper', Runget.settings.wallpaper);
+            }
         }
 
         function showContextMenu(x, y) {
@@ -1486,11 +1359,13 @@
                 <div class="context-item" onclick="openApp('dolphin')"><i class="fas fa-folder"></i> Открыть Dolphin</div>
                 <div class="context-item" onclick="openApp('konsole')"><i class="fas fa-terminal"></i> Открыть Konsole</div>
                 <div class="context-separator"></div>
+                <div class="context-item" onclick="openApp('spectacle')"><i class="fas fa-camera"></i> Сделать скриншот</div>
+                <div class="context-separator"></div>
                 <div class="context-item" onclick="openApp('settings')"><i class="fas fa-cog"></i> Параметры системы</div>
                 <div class="context-item" onclick="openApp('info')"><i class="fas fa-info-circle"></i> О системе</div>
             `;
             menu.style.left = Math.min(x, window.innerWidth - 220) + 'px';
-            menu.style.top = Math.min(y, window.innerHeight - 200) + 'px';
+            menu.style.top = Math.min(y, window.innerHeight - 250) + 'px';
             menu.style.display = 'block';
         }
 
@@ -1519,8 +1394,8 @@
                 iconType: options.iconType || 'fas',
                 width: options.width || 750,
                 height: options.height || 500,
-                x: options.x ?? 100 + (Runget.windows.size * 30),
-                y: options.y ?? 60 + (Runget.windows.size * 30),
+                x: options.x ?? 80 + (Runget.windows.size * 25) % 200,
+                y: options.y ?? 50 + (Runget.windows.size * 25) % 150,
                 minimized: false,
                 maximized: false,
                 content: options.content || '',
@@ -1565,12 +1440,9 @@
                 Runget.dragState = { id: win.id, startX: e.clientX - w.x, startY: e.clientY - w.y };
             };
             
-            header.ondblclick = (e) => {
-                if (!e.target.closest('.window-controls')) maximizeWindow(win.id);
-            };
+            header.ondblclick = (e) => { if (!e.target.closest('.window-controls')) maximizeWindow(win.id); };
             
-            const resize = el.querySelector('.window-resize');
-            resize.onmousedown = (e) => {
+            el.querySelector('.window-resize').onmousedown = (e) => {
                 e.stopPropagation();
                 const w = Runget.windows.get(win.id);
                 Runget.resizeState = { id: win.id, startX: e.clientX, startY: e.clientY, startW: w.width, startH: w.height };
@@ -1598,10 +1470,7 @@
             }
         });
 
-        document.addEventListener('mouseup', () => {
-            Runget.dragState = null;
-            Runget.resizeState = null;
-        });
+        document.addEventListener('mouseup', () => { Runget.dragState = null; Runget.resizeState = null; });
 
         function focusWindow(id) {
             Runget.activeWindow = id;
@@ -1669,42 +1538,86 @@
                 kate: () => openKate(params.file),
                 settings: openSettings,
                 info: openSystemInfo,
-                dgc: openDGC,
+                dgc: () => openWebApp('DGC - Dual Gaming Centre', 'fa-gamepad', 'https://kolyadual.github.io/dualgamingcentre/', 1100, 700),
+                speedtest: () => openWebApp('Speedtest', 'fa-tachometer-alt', 'https://kirilldual0987.github.io/dual-speed-tester/', 900, 650),
+                'speedtest-light': () => openWebApp('Speedtest Light', 'fa-bolt', 'https://kirilldual0987.github.io/dual-speed-tester-light/', 900, 650),
+                '3d-benchmark': () => openWebApp('3D Benchmark', 'fa-cube', 'https://kirilldual0987.github.io/dual-3d_benchmark-online/', 1000, 700),
                 calculator: openCalculator,
-                spectacle: () => showNotification('Скриншот сохранён', 'success'),
+                spectacle: openSpectacle,
                 gwenview: openGwenview,
                 elisa: openElisa,
                 okular: openOkular,
                 calendar: openCalendar,
                 weather: openWeather,
                 monitor: openSystemMonitor,
-                firefox: openFirefox,
+                firefox: () => openWebApp('Firefox', 'fa-firefox-browser', 'https://www.google.com/webhp?igu=1', 1000, 650, 'fab'),
                 krita: openKrita,
                 libreoffice: openLibreOffice,
                 snake: openSnake,
+                tetris: openTetris,
+                pong: openPong,
+                game2048: open2048,
+                minesweeper: openMinesweeper,
+                tictactoe: openTicTacToe,
                 tasks: openTasks,
-                discover: openDiscover
+                notes: openNotes,
+                clock: openClock
             };
             if (handlers[appId]) handlers[appId]();
         }
 
-        // DGC - Dual Gaming Centre
-        function openDGC() {
+        function openWebApp(title, icon, url, width = 900, height = 600, iconType = 'fas') {
             createWindow({
-                title: 'DGC - Dual Gaming Centre',
-                icon: 'fa-gamepad',
-                width: 1100,
-                height: 700,
+                title, icon, iconType, width, height,
                 content: `
                     <div class="kde-toolbar">
-                        <button class="kde-btn" onclick="document.getElementById('dgcFrame').src = document.getElementById('dgcFrame').src"><i class="fas fa-redo"></i> Обновить</button>
-                        <span style="flex:1;text-align:center;color:var(--plasma-text);font-size:13px"><i class="fas fa-gamepad"></i> Dual Gaming Centre</span>
-                        <button class="kde-btn" onclick="window.open('https://kolyadual.github.io/dualgamingcentre/', '_blank')"><i class="fas fa-external-link-alt"></i> Открыть в браузере</button>
+                        <button class="kde-btn" onclick="this.closest('.window-content').querySelector('iframe').src=this.closest('.window-content').querySelector('iframe').src"><i class="fas fa-redo"></i> Обновить</button>
+                        <span style="flex:1"></span>
+                        <button class="kde-btn" onclick="window.open('${url}','_blank')"><i class="fas fa-external-link-alt"></i> В браузере</button>
                     </div>
-                    <iframe id="dgcFrame" style="width:100%;height:calc(100% - 46px);border:none;background:#1a1a2e" src="https://kolyadual.github.io/dualgamingcentre/"></iframe>
-                `,
-                appId: 'dgc'
+                    <iframe style="width:100%;height:calc(100% - 46px);border:none" src="${url}"></iframe>
+                `, appId: title.toLowerCase()
             });
+        }
+
+        // Spectacle - Screenshot tool
+        function openSpectacle() {
+            createWindow({
+                title: 'Spectacle - Скриншот',
+                icon: 'fa-camera',
+                width: 500,
+                height: 400,
+                content: `
+                    <div style="padding:30px;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:center;background:var(--plasma-bg)">
+                        <i class="fas fa-camera" style="font-size:64px;color:var(--plasma-accent);margin-bottom:20px"></i>
+                        <h2 style="color:var(--plasma-text);margin-bottom:10px">Spectacle</h2>
+                        <p style="color:var(--plasma-text-secondary);margin-bottom:30px">Инструмент для создания скриншотов</p>
+                        <div style="display:flex;flex-direction:column;gap:12px;max-width:300px;margin:0 auto">
+                            <button class="kde-btn" style="justify-content:center;padding:15px" onclick="takeScreenshot('full')">
+                                <i class="fas fa-desktop"></i> Весь экран
+                            </button>
+                            <button class="kde-btn" style="justify-content:center;padding:15px" onclick="takeScreenshot('desktop')">
+                                <i class="fas fa-image"></i> Только рабочий стол
+                            </button>
+                        </div>
+                    </div>
+                `, appId: 'spectacle'
+            });
+        }
+
+        async function takeScreenshot(mode) {
+            showNotification('Создание скриншота...', 'info');
+            try {
+                const element = mode === 'full' ? document.body : document.getElementById('desktop');
+                const canvas = await html2canvas(element, { useCORS: true, allowTaint: true, scale: 1 });
+                const link = document.createElement('a');
+                link.download = `screenshot-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showNotification('Скриншот сохранён!', 'success');
+            } catch (e) {
+                showNotification('Ошибка создания скриншота', 'error');
+            }
         }
 
         // Dolphin File Manager
@@ -1715,7 +1628,7 @@
                 const parts = p.split('/').filter(Boolean);
                 let current = Runget.fileSystem['/'];
                 for (const part of parts) {
-                    if (current.children && current.children[part]) current = current.children[part];
+                    if (current.children?.[part]) current = current.children[part];
                 }
                 return current;
             }
@@ -1723,46 +1636,33 @@
             function render() {
                 const folder = getFolder(currentPath);
                 const items = folder.children || {};
-                const places = [
-                    { icon: 'fa-home', name: 'Домой', path: '/home/user' },
-                    { icon: 'fa-file-alt', name: 'Документы', path: '/home/user/Документы' },
-                    { icon: 'fa-download', name: 'Загрузки', path: '/home/user/Загрузки' },
-                    { icon: 'fa-image', name: 'Изображения', path: '/home/user/Изображения' },
-                    { icon: 'fa-music', name: 'Музыка', path: '/home/user/Музыка' },
-                    { icon: 'fa-video', name: 'Видео', path: '/home/user/Видео' },
-                    { icon: 'fa-hdd', name: 'Корень', path: '/' }
-                ];
-                
-                let content = `
+                return `
                     <div class="kde-toolbar">
                         <button class="kde-btn" onclick="this.closest('.window-content').__nav('..')"><i class="fas fa-arrow-left"></i></button>
-                        <button class="kde-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fas fa-arrow-up"></i></button>
+                        <button class="kde-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fas fa-home"></i></button>
                         <input class="kde-input" style="flex:1;margin:0 8px" value="${currentPath}" readonly>
-                        <button class="kde-btn"><i class="fas fa-search"></i></button>
                     </div>
                     <div style="display:flex;height:calc(100% - 46px)">
                         <div class="dolphin-sidebar">
                             <div class="dolphin-section-title">Места</div>
-                            ${places.map(p => `<div class="dolphin-place ${p.path === currentPath ? 'active' : ''}" onclick="this.closest('.window-content').__go('${p.path}')"><i class="fas ${p.icon}"></i> ${p.name}</div>`).join('')}
+                            ${[
+                                { icon: 'fa-home', name: 'Домой', path: '/home/user' },
+                                { icon: 'fa-file-alt', name: 'Документы', path: '/home/user/Документы' },
+                                { icon: 'fa-download', name: 'Загрузки', path: '/home/user/Загрузки' },
+                                { icon: 'fa-image', name: 'Изображения', path: '/home/user/Изображения' },
+                                { icon: 'fa-hdd', name: 'Корень', path: '/' }
+                            ].map(p => `<div class="dolphin-place ${p.path === currentPath ? 'active' : ''}" onclick="this.closest('.window-content').__go('${p.path}')"><i class="fas ${p.icon}"></i> ${p.name}</div>`).join('')}
                         </div>
                         <div class="dolphin-content">
+                            ${Object.entries(items).map(([name, item]) => `
+                                <div class="dolphin-item" ondblclick="this.closest('.window-content').__open('${name}','${item.type}')">
+                                    <div class="dolphin-item-icon"><i class="fas ${item.type === 'folder' ? 'fa-folder' : 'fa-file-alt'}" style="color:${item.type === 'folder' ? '#f8b84e' : '#bdc3c7'}"></i></div>
+                                    <div class="dolphin-item-name">${name}</div>
+                                </div>
+                            `).join('') || '<div style="grid-column:1/-1;text-align:center;color:var(--plasma-text-secondary);padding:60px"><i class="fas fa-folder-open" style="font-size:48px;opacity:0.5;display:block;margin-bottom:16px"></i>Папка пуста</div>'}
+                        </div>
+                    </div>
                 `;
-                
-                Object.entries(items).forEach(([name, item]) => {
-                    const icon = item.type === 'folder' ? 'fa-folder' : 'fa-file-alt';
-                    const color = item.type === 'folder' ? '#f8b84e' : '#bdc3c7';
-                    content += `<div class="dolphin-item" ondblclick="this.closest('.window-content').__open('${name}', '${item.type}')">
-                        <div class="dolphin-item-icon"><i class="fas ${icon}" style="color:${color}"></i></div>
-                        <div class="dolphin-item-name">${name}</div>
-                    </div>`;
-                });
-                
-                if (Object.keys(items).length === 0) {
-                    content += '<div style="grid-column:1/-1;text-align:center;color:var(--plasma-text-secondary);padding:60px 20px"><i class="fas fa-folder-open" style="font-size:48px;margin-bottom:16px;display:block;opacity:0.5"></i>Папка пуста</div>';
-                }
-                
-                content += '</div></div>';
-                return content;
             }
             
             const winId = createWindow({ title: 'Dolphin — ' + currentPath, icon: 'fa-folder', width: 900, height: 550, content: render(), appId: 'dolphin' });
@@ -1774,29 +1674,15 @@
                         const parts = currentPath.split('/').filter(Boolean);
                         parts.pop();
                         currentPath = '/' + parts.join('/') || '/';
-                    } else {
-                        currentPath = dir;
-                    }
+                    } else currentPath = dir;
                     contentEl.innerHTML = render();
                     document.querySelector(`#window-${winId} .window-title`).textContent = 'Dolphin — ' + currentPath;
                     setupHandlers();
                 };
-                contentEl.__go = (path) => {
-                    currentPath = path;
-                    contentEl.innerHTML = render();
-                    document.querySelector(`#window-${winId} .window-title`).textContent = 'Dolphin — ' + currentPath;
-                    setupHandlers();
-                };
+                contentEl.__go = (path) => { currentPath = path; contentEl.innerHTML = render(); document.querySelector(`#window-${winId} .window-title`).textContent = 'Dolphin — ' + currentPath; setupHandlers(); };
                 contentEl.__open = (name, type) => {
-                    if (type === 'folder') {
-                        currentPath = currentPath === '/' ? '/' + name : currentPath + '/' + name;
-                        contentEl.innerHTML = render();
-                        document.querySelector(`#window-${winId} .window-title`).textContent = 'Dolphin — ' + currentPath;
-                        setupHandlers();
-                    } else {
-                        const folder = getFolder(currentPath);
-                        openApp('kate', { file: { name, content: folder.children[name].content } });
-                    }
+                    if (type === 'folder') { currentPath = currentPath === '/' ? '/' + name : currentPath + '/' + name; contentEl.innerHTML = render(); document.querySelector(`#window-${winId} .window-title`).textContent = 'Dolphin — ' + currentPath; setupHandlers(); }
+                    else { const folder = getFolder(currentPath); openApp('kate', { file: { name, content: folder.children[name].content } }); }
                 };
             }
             setupHandlers();
@@ -1804,23 +1690,18 @@
 
         // Konsole Terminal
         function openKonsole() {
-            let history = ['Welcome to Runget 2.0 "Anythink Anywhere"', 'Type "help" for available commands', ''];
+            let history = ['Welcome to Runget 2.0 "Anythink Anywhere"', 'Type "help" for commands', ''];
             let cwd = '/home/user';
             
             function getFolder(p) {
                 const parts = p.split('/').filter(Boolean);
                 let current = Runget.fileSystem['/'];
-                for (const part of parts) {
-                    if (current.children && current.children[part]) current = current.children[part];
-                }
+                for (const part of parts) { if (current.children?.[part]) current = current.children[part]; }
                 return current;
             }
             
             const winId = createWindow({
-                title: 'Konsole',
-                icon: 'fa-terminal',
-                width: 750,
-                height: 480,
+                title: 'Konsole', icon: 'fa-terminal', width: 750, height: 480,
                 content: `<div class="konsole" id="konsole-${Runget.windowId}"><div id="konsoleOutput"></div><div style="display:flex"><span class="konsole-prompt">user@runget</span>:<span class="konsole-path">~</span>$ <input class="konsole-input" id="konsoleInput" autofocus></div></div>`,
                 appId: 'konsole'
             });
@@ -1828,174 +1709,107 @@
             const output = document.getElementById('konsoleOutput');
             const input = document.getElementById('konsoleInput');
             
-            function updateOutput() {
-                output.innerHTML = history.map(l => `<div class="konsole-line">${l}</div>`).join('');
-                output.parentElement.scrollTop = output.parentElement.scrollHeight;
-            }
-            
-            function updatePrompt() {
-                const path = cwd.replace('/home/user', '~') || '/';
-                input.previousElementSibling.textContent = path;
-            }
-            
+            function updateOutput() { output.innerHTML = history.map(l => `<div class="konsole-line">${l}</div>`).join(''); output.parentElement.scrollTop = output.parentElement.scrollHeight; }
+            function updatePrompt() { input.previousElementSibling.textContent = cwd.replace('/home/user', '~') || '/'; }
             updateOutput();
             
             input.onkeydown = (e) => {
                 if (e.key === 'Enter') {
                     const cmd = input.value.trim();
-                    const displayPath = cwd.replace('/home/user', '~') || '/';
-                    history.push(`<span class="konsole-prompt">user@runget</span>:<span class="konsole-path">${displayPath}</span>$ ${cmd}`);
+                    history.push(`<span class="konsole-prompt">user@runget</span>:<span class="konsole-path">${cwd.replace('/home/user', '~')}</span>$ ${cmd}`);
                     
                     if (cmd) {
-                        const parts = cmd.split(' ');
-                        const command = parts[0];
-                        const args = parts.slice(1);
-                        
+                        const [command, ...args] = cmd.split(' ');
                         const commands = {
-                            help: () => 'Доступные команды: help, ls, cd, pwd, cat, mkdir, touch, rm, echo, clear, date, whoami, uname, neofetch, hostname',
-                            ls: () => {
-                                const folder = getFolder(cwd);
-                                return Object.entries(folder.children || {}).map(([n, f]) => 
-                                    `<span style="color:${f.type === 'folder' ? '#3daee9' : '#eff0f1'}">${n}${f.type === 'folder' ? '/' : ''}</span>`
-                                ).join('  ') || '';
-                            },
-                            cd: () => {
-                                if (!args[0] || args[0] === '~') { cwd = '/home/user'; updatePrompt(); return ''; }
-                                if (args[0] === '/') { cwd = '/'; updatePrompt(); return ''; }
-                                if (args[0] === '..') {
-                                    const parts = cwd.split('/').filter(Boolean);
-                                    parts.pop();
-                                    cwd = '/' + parts.join('/') || '/';
-                                    updatePrompt();
-                                    return '';
-                                }
-                                const folder = getFolder(cwd);
-                                if (folder.children?.[args[0]]?.type === 'folder') {
-                                    cwd = cwd === '/' ? '/' + args[0] : cwd + '/' + args[0];
-                                    updatePrompt();
-                                    return '';
-                                }
-                                return `bash: cd: ${args[0]}: Нет такого файла или каталога`;
-                            },
+                            help: () => 'Commands: help, ls, cd, pwd, cat, mkdir, touch, rm, echo, clear, date, whoami, uname, neofetch, screenfetch',
+                            ls: () => { const f = getFolder(cwd); return Object.entries(f.children || {}).map(([n, f]) => `<span style="color:${f.type === 'folder' ? '#3daee9' : '#eff0f1'}">${n}${f.type === 'folder' ? '/' : ''}</span>`).join('  '); },
+                            cd: () => { if (!args[0] || args[0] === '~') { cwd = '/home/user'; updatePrompt(); return ''; } if (args[0] === '/') { cwd = '/'; updatePrompt(); return ''; } if (args[0] === '..') { const parts = cwd.split('/').filter(Boolean); parts.pop(); cwd = '/' + parts.join('/') || '/'; updatePrompt(); return ''; } const folder = getFolder(cwd); if (folder.children?.[args[0]]?.type === 'folder') { cwd = cwd === '/' ? '/' + args[0] : cwd + '/' + args[0]; updatePrompt(); return ''; } return `cd: ${args[0]}: No such directory`; },
                             pwd: () => cwd,
-                            cat: () => {
-                                if (!args[0]) return 'cat: отсутствует операнд';
-                                const folder = getFolder(cwd);
-                                if (folder.children?.[args[0]]?.type === 'file') return folder.children[args[0]].content.replace(/\n/g, '<br>');
-                                return `cat: ${args[0]}: Нет такого файла или каталога`;
-                            },
-                            mkdir: () => {
-                                if (!args[0]) return 'mkdir: отсутствует операнд';
-                                const folder = getFolder(cwd);
-                                folder.children[args[0]] = { type: 'folder', children: {} };
-                                return '';
-                            },
-                            touch: () => {
-                                if (!args[0]) return 'touch: отсутствует операнд';
-                                const folder = getFolder(cwd);
-                                folder.children[args[0]] = { type: 'file', content: '' };
-                                return '';
-                            },
-                            rm: () => {
-                                if (!args[0]) return 'rm: отсутствует операнд';
-                                const folder = getFolder(cwd);
-                                if (folder.children?.[args[0]]) { delete folder.children[args[0]]; return ''; }
-                                return `rm: невозможно удалить '${args[0]}': Нет такого файла или каталога`;
-                            },
+                            cat: () => { if (!args[0]) return 'cat: missing operand'; const f = getFolder(cwd); return f.children?.[args[0]]?.content?.replace(/\n/g, '<br>') || `cat: ${args[0]}: No such file`; },
+                            mkdir: () => { if (!args[0]) return 'mkdir: missing operand'; getFolder(cwd).children[args[0]] = { type: 'folder', children: {} }; return ''; },
+                            touch: () => { if (!args[0]) return 'touch: missing operand'; getFolder(cwd).children[args[0]] = { type: 'file', content: '' }; return ''; },
+                            rm: () => { if (!args[0]) return 'rm: missing operand'; const f = getFolder(cwd); if (f.children?.[args[0]]) { delete f.children[args[0]]; return ''; } return `rm: ${args[0]}: No such file`; },
                             echo: () => args.join(' '),
                             clear: () => { history = []; return ''; },
                             date: () => new Date().toLocaleString('ru-RU'),
                             whoami: () => 'user',
                             hostname: () => 'runget-pc',
-                            uname: () => args[0] === '-a' ? `Linux runget-pc ${Runget.kernel} #1 SMP PREEMPT_DYNAMIC Runget 2.0 x86_64 GNU/Linux` : 'Linux',
-                            neofetch: () => `
-<span style="color:#3daee9">       RRRRRRRRRRR</span>           <span style="color:#3daee9">user</span>@<span style="color:#3daee9">runget-pc</span>
-<span style="color:#3daee9">       RR       RR</span>          ─────────────────
-<span style="color:#3daee9">       RR       RR</span>          <span style="color:#3daee9">OS:</span> Runget 2.0 Anythink Anywhere x86_64
-<span style="color:#3daee9">       RRRRRRRRRRR</span>           <span style="color:#3daee9">Host:</span> Web Browser
-<span style="color:#3daee9">       RR   RR</span>               <span style="color:#3daee9">Kernel:</span> ${Runget.kernel}
-<span style="color:#3daee9">       RR    RR</span>              <span style="color:#3daee9">Uptime:</span> ${Math.floor((Date.now() % 86400000) / 60000)} mins
-<span style="color:#3daee9">       RR     RR</span>             <span style="color:#3daee9">Shell:</span> bash 5.2.15
-<span style="color:#3daee9">       RR      RR</span>            <span style="color:#3daee9">DE:</span> ${Runget.desktop}
-<span style="color:#3daee9">       RR       RR</span>           <span style="color:#3daee9">WM:</span> KWin
-                              <span style="color:#3daee9">Theme:</span> Breeze Dark
-                              <span style="color:#3daee9">Terminal:</span> Konsole
-                              <span style="color:#3daee9">CPU:</span> Virtual CPU @ ${navigator.hardwareConcurrency || 4} cores
-                              <span style="color:#3daee9">Memory:</span> ${Math.round(performance?.memory?.usedJSHeapSize / 1024 / 1024) || '~256'} MiB / 16384 MiB`
+                            uname: () => args[0] === '-a' ? `Linux runget-pc ${Runget.kernel} x86_64 GNU/Linux` : 'Linux',
+                            neofetch: () => `<span style="color:#3daee9">       RRRRRRRRRRRRR</span>         user@runget-pc
+<span style="color:#3daee9">       RRRRRRRRRRRRRRRR</span>      ----------------
+<span style="color:#3daee9">       RRRRR      RRRRR</span>      <span style="color:#3daee9">OS:</span> Runget 2.0 Anythink Anywhere
+<span style="color:#3daee9">       RRRRR      RRRRR</span>      <span style="color:#3daee9">Host:</span> runget-pc
+<span style="color:#3daee9">       RRRRR      RRRRR</span>      <span style="color:#3daee9">Kernel:</span> ${Runget.kernel}
+<span style="color:#3daee9">       RRRRRRRRRRRRRRRR</span>      <span style="color:#3daee9">Uptime:</span> ${Math.floor(performance.now()/60000)} mins
+<span style="color:#3daee9">       RRRRRRRRRRRRR</span>         <span style="color:#3daee9">Packages:</span> 2847 (dpkg)
+<span style="color:#3daee9">       RRRRR   RRRRR</span>         <span style="color:#3daee9">Shell:</span> bash 5.2.15
+<span style="color:#3daee9">       RRRRR    RRRRR</span>        <span style="color:#3daee9">Resolution:</span> ${window.innerWidth}x${window.innerHeight}
+<span style="color:#3daee9">       RRRRR     RRRRR</span>       <span style="color:#3daee9">DE:</span> ${Runget.desktop}
+<span style="color:#3daee9">       RRRRR      RRRRR</span>      <span style="color:#3daee9">WM:</span> KWin
+<span style="color:#3daee9">       RRRRR       RRRRR</span>     <span style="color:#3daee9">Theme:</span> Breeze Dark
+<span style="color:#3daee9">       RRRRR        RRRRR</span>    <span style="color:#3daee9">Icons:</span> Breeze
+<span style="color:#3daee9">                          </span>    <span style="color:#3daee9">Terminal:</span> Konsole
+<span style="color:#3daee9">                          </span>    <span style="color:#3daee9">CPU:</span> Virtual CPU @ 2.4GHz
+<span style="color:#3daee9">                          </span>    <span style="color:#3daee9">Memory:</span> 4096MiB / 16384MiB
+
+<span style="background:#e74c3c">   </span><span style="background:#f39c12">   </span><span style="background:#27ae60">   </span><span style="background:#3daee9">   </span><span style="background:#9b59b6">   </span><span style="background:#e91e63">   </span><span style="background:#fff">   </span><span style="background:#2c3e50">   </span>`,
+                            screenfetch: () => commands.neofetch(),
+                            lsb_release: () => args[0] === '-a' ? `Distributor ID: Runget
+Description:    Runget 2.0 (Anythink Anywhere)
+Release:        2.0
+Codename:       anythink` : 'lsb_release: use -a for all info',
+                            free: () => `              total        used        free      shared  buff/cache   available
+Mem:       16384000     4096000    10240000      512000     2048000    11776000
+Swap:       8192000           0     8192000`,
+                            df: () => `Filesystem     1K-blocks     Used Available Use% Mounted on
+/dev/sda1      524288000 125829120 398458880  24% /
+tmpfs            8192000        0   8192000   0% /dev/shm`,
+                            uptime: () => `${new Date().toLocaleTimeString('ru-RU')} up ${Math.floor(performance.now()/60000)} min, 1 user, load average: 0.15, 0.10, 0.05`,
+                            ps: () => `  PID TTY          TIME CMD
+    1 ?        00:00:01 systemd
+  256 ?        00:00:00 plasmashell
+  312 pts/0    00:00:00 konsole
+  315 pts/0    00:00:00 bash`
                         };
-                        
-                        const result = commands[command] ? commands[command]() : `bash: ${command}: команда не найдена`;
+                        const result = commands[command] ? commands[command]() : `${command}: command not found`;
                         if (result) history.push(result);
                     }
-                    
-                    updateOutput();
-                    input.value = '';
+                    updateOutput(); input.value = '';
                 }
             };
-            
             setTimeout(() => input.focus(), 100);
         }
 
         // Kate Editor
         function openKate(file) {
             const winId = createWindow({
-                title: file ? file.name + ' — Kate' : 'Безымянный — Kate',
-                icon: 'fa-file-code',
-                width: 750,
-                height: 520,
+                title: file ? file.name + ' — Kate' : 'Untitled — Kate', icon: 'fa-file-code', width: 750, height: 520,
                 content: `
                     <div class="kde-toolbar">
-                        <button class="kde-btn" onclick="this.closest('.window-content').__new()"><i class="fas fa-file"></i> Новый</button>
-                        <button class="kde-btn" onclick="this.closest('.window-content').__save()"><i class="fas fa-save"></i> Сохранить</button>
+                        <button class="kde-btn" onclick="this.closest('.window-content').querySelector('textarea').value=''"><i class="fas fa-file"></i> Новый</button>
+                        <button class="kde-btn" onclick="const t=this.closest('.window-content').querySelector('textarea').value;const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='document.txt';a.click();showNotification('Файл сохранён','success')"><i class="fas fa-save"></i> Сохранить</button>
                     </div>
-                    <textarea style="width:100%;height:calc(100% - 46px);background:#1a1d21;color:var(--plasma-text);border:none;padding:16px;font-family:'JetBrains Mono','Fira Code',monospace;font-size:13px;resize:none;outline:none;line-height:1.6">${file?.content || ''}</textarea>
-                `,
-                appId: 'kate'
+                    <textarea style="width:100%;height:calc(100% - 46px);background:#1a1d21;color:var(--plasma-text);border:none;padding:16px;font-family:monospace;font-size:13px;resize:none;outline:none">${file?.content || ''}</textarea>
+                `, appId: 'kate'
             });
-            
-            const contentEl = document.querySelector(`#window-${winId} .window-content`);
-            contentEl.__new = () => {
-                contentEl.querySelector('textarea').value = '';
-                document.querySelector(`#window-${winId} .window-title`).textContent = 'Безымянный — Kate';
-            };
-            contentEl.__save = () => {
-                const text = contentEl.querySelector('textarea').value;
-                const blob = new Blob([text], { type: 'text/plain' });
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = 'document.txt';
-                a.click();
-                showNotification('Файл сохранён', 'success');
-            };
         }
 
         // System Settings
         function openSettings() {
-            createWindow({
-                title: 'Параметры системы',
-                icon: 'fa-cog',
-                width: 900,
-                height: 600,
-                content: `
+            const winId = createWindow({
+                title: 'Параметры системы', icon: 'fa-cog', width: 950, height: 650,
+                content: '', appId: 'settings'
+            });
+            
+            function renderSettings() {
+                const contentEl = document.querySelector(`#window-${winId} .window-content`);
+                if (!contentEl) return;
+                contentEl.innerHTML = `
                     <div style="display:flex;height:100%">
                         <div class="settings-sidebar">
                             <div class="settings-section">
                                 <div class="settings-section-title">Внешний вид</div>
                                 <div class="settings-item active"><i class="fas fa-image"></i> Обои</div>
-                                <div class="settings-item"><i class="fas fa-palette"></i> Глобальная тема</div>
-                                <div class="settings-item"><i class="fas fa-paint-roller"></i> Цвета</div>
-                            </div>
-                            <div class="settings-section">
-                                <div class="settings-section-title">Рабочее пространство</div>
-                                <div class="settings-item"><i class="fas fa-desktop"></i> Рабочий стол</div>
-                                <div class="settings-item"><i class="fas fa-bars"></i> Панель</div>
-                            </div>
-                            <div class="settings-section">
-                                <div class="settings-section-title">Оборудование</div>
-                                <div class="settings-item"><i class="fas fa-tv"></i> Дисплей</div>
-                                <div class="settings-item"><i class="fas fa-volume-up"></i> Звук</div>
-                                <div class="settings-item"><i class="fas fa-keyboard"></i> Клавиатура</div>
-                                <div class="settings-item"><i class="fas fa-mouse"></i> Мышь</div>
                             </div>
                             <div class="settings-section">
                                 <div class="settings-section-title">Система</div>
@@ -2004,115 +1818,81 @@
                         </div>
                         <div class="settings-content">
                             <h2 class="settings-title">Обои рабочего стола</h2>
-                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-                                ${wallpapers.map((w, i) => `
-                                    <div style="border-radius:10px;overflow:hidden;cursor:pointer;border:3px solid ${Runget.settings.wallpaper === i ? 'var(--plasma-accent)' : 'transparent'};transition:all 0.2s" 
-                                         onclick="Runget.settings.wallpaper=${i};applyWallpaper();this.parentElement.querySelectorAll('div').forEach(d=>d.style.borderColor='transparent');this.style.borderColor='var(--plasma-accent)'">
-                                        <div style="height:110px;background:${w.gradient};background-size:cover"></div>
-                                        <div style="padding:10px;background:var(--plasma-surface);color:var(--plasma-text);font-size:12px">${w.name}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
+                            <p style="color:var(--plasma-text-secondary);margin-bottom:20px">Выберите градиент для рабочего стола</p>
+                            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px" id="wallpaperGrid"></div>
                         </div>
                     </div>
-                `,
-                appId: 'settings'
-            });
+                `;
+                
+                const grid = document.getElementById('wallpaperGrid');
+                wallpapers.forEach((w, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'wallpaper-item';
+                    item.style.cssText = `border-radius:10px;overflow:hidden;cursor:pointer;border:3px solid ${Runget.settings.wallpaper === i ? 'var(--plasma-accent)' : 'transparent'};transition:all 0.2s`;
+                    item.innerHTML = `
+                        <div style="height:80px;background:${w.gradient}"></div>
+                        <div style="padding:8px 10px;background:var(--plasma-surface);color:var(--plasma-text);font-size:11px;text-align:center">${w.name}</div>
+                    `;
+                    item.onclick = function() {
+                        Runget.settings.wallpaper = i;
+                        applyWallpaper();
+                        document.querySelectorAll('#wallpaperGrid .wallpaper-item').forEach(el => {
+                            el.style.borderColor = 'transparent';
+                        });
+                        this.style.borderColor = 'var(--plasma-accent)';
+                        showNotification(`Обои изменены: ${w.name}`, 'success');
+                    };
+                    grid.appendChild(item);
+                });
+            }
+            
+            renderSettings();
         }
 
         // System Info
         function openSystemInfo() {
             createWindow({
-                title: 'О системе',
-                icon: 'fa-info-circle',
-                width: 600,
-                height: 580,
+                title: 'О системе', icon: 'fa-info-circle', width: 600, height: 580,
                 content: `
                     <div style="padding:30px;overflow-y:auto;height:100%">
                         <div class="about-logo">
-                            <span class="logo-3d-r logo-3d-r-gradient" style="font-size:80px">R</span>
+                            <span class="logo-3d-r" style="font-size:80px">R</span>
                             <div class="about-title">Runget 2.0</div>
                             <div class="about-subtitle">"Anythink Anywhere"</div>
                         </div>
-                        
                         <div class="about-info">
-                            <div class="about-row">
-                                <span class="about-label">Версия ОС</span>
-                                <span class="about-value">${Runget.version} (${Runget.codename})</span>
-                            </div>
-                            <div class="about-row">
-                                <span class="about-label">Ядро Linux</span>
-                                <span class="about-value">${Runget.kernel}</span>
-                            </div>
-                            <div class="about-row">
-                                <span class="about-label">Рабочий стол</span>
-                                <span class="about-value">${Runget.desktop}</span>
-                            </div>
-                            <div class="about-row">
-                                <span class="about-label">Основана на</span>
-                                <span class="about-value">${Runget.based}</span>
-                            </div>
-                            <div class="about-row">
-                                <span class="about-label">Архитектура</span>
-                                <span class="about-value">x86_64</span>
-                            </div>
-                            <div class="about-row">
-                                <span class="about-label">Графическая система</span>
-                                <span class="about-value">Wayland</span>
-                            </div>
+                            <div class="about-row"><span class="about-label">Версия</span><span class="about-value">${Runget.version}</span></div>
+                            <div class="about-row"><span class="about-label">Кодовое имя</span><span class="about-value">${Runget.codename}</span></div>
+                            <div class="about-row"><span class="about-label">Ядро</span><span class="about-value">${Runget.kernel}</span></div>
+                            <div class="about-row"><span class="about-label">Рабочий стол</span><span class="about-value">${Runget.desktop}</span></div>
+                            <div class="about-row"><span class="about-label">Основа</span><span class="about-value">${Runget.based}</span></div>
                         </div>
-                        
                         <div class="about-info">
-                            <div class="about-row">
-                                <span class="about-label">Разработчики</span>
-                                <span class="about-value">Kolyadual, Kirilldual, Seregaosm, Neeby</span>
-                            </div>
-                            <div class="about-row">
-                                <span class="about-label">Telegram</span>
-                                <span class="about-value"><a href="https://t.me/runget_rt" style="color:var(--plasma-accent)">@runget_rt</a></span>
-                            </div>
-                            <div class="about-row">
-                                <span class="about-label">Email</span>
-                                <span class="about-value">runget.feedback@gmail.com</span>
-                            </div>
+                            <div class="about-row"><span class="about-label">Разработчики</span><span class="about-value">Kolyadual, Kirilldual, Seregaosm, Neeby</span></div>
+                            <div class="about-row"><span class="about-label">Telegram</span><span class="about-value"><a href="https://t.me/runget_rt" style="color:var(--plasma-accent)">@runget_rt</a></span></div>
+                            <div class="about-row"><span class="about-label">Email</span><span class="about-value">runget.feedback@gmail.com</span></div>
                         </div>
-                        
-                        <p style="color:var(--plasma-text-secondary);font-size:12px;text-align:center;margin-top:20px">
-                            Легкая, быстрая, простая и красивая операционная система<br>
-                            Поддержка Windows, Linux и Android приложений<br><br>
-                            © 2025 Kolyadual and Runget team. Все права защищены.
-                        </p>
+                        <p style="color:var(--plasma-text-secondary);font-size:12px;text-align:center">© 2025 Kolyadual and Runget team</p>
                     </div>
-                `,
-                appId: 'info'
+                `, appId: 'info'
             });
         }
 
         // Calculator
         function openCalculator() {
-            let display = '0';
-            let prev = null, op = null, waitOp = false;
-            
-            const winId = createWindow({
-                title: 'Калькулятор',
-                icon: 'fa-calculator',
-                width: 340,
-                height: 440,
-                content: '',
-                appId: 'calculator'
-            });
+            let display = '0', prev = null, op = null, waitOp = false;
+            const winId = createWindow({ title: 'Калькулятор', icon: 'fa-calculator', width: 320, height: 440, content: '', appId: 'calculator' });
             
             function render() {
-                const btns = ['C', '±', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '⌫', '='];
                 return `
                     <div style="padding:16px;background:var(--plasma-bg);height:100%">
-                        <div style="background:var(--plasma-surface);padding:20px;border-radius:8px;text-align:right;font-size:36px;color:var(--plasma-text);margin-bottom:16px;font-weight:300;min-height:70px;display:flex;align-items:center;justify-content:flex-end" id="calcDisplay">${display}</div>
+                        <div style="background:var(--plasma-surface);padding:20px;border-radius:8px;text-align:right;font-size:32px;color:var(--plasma-text);margin-bottom:16px;min-height:60px" id="calcDisplay">${display}</div>
                         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-                            ${btns.map(b => {
+                            ${['C','±','%','÷','7','8','9','×','4','5','6','-','1','2','3','+','0','.','⌫','='].map(b => {
                                 let bg = 'rgba(255,255,255,0.06)';
                                 if (['÷','×','-','+','='].includes(b)) bg = 'var(--plasma-accent)';
                                 if (['C','±','%'].includes(b)) bg = 'rgba(255,255,255,0.12)';
-                                return `<button style="padding:18px;border:none;border-radius:8px;font-size:18px;cursor:pointer;background:${bg};color:var(--plasma-text);transition:all 0.15s" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter=''" onclick="window.__calc('${b}')">${b}</button>`;
+                                return `<button style="padding:16px;border:none;border-radius:8px;font-size:18px;cursor:pointer;background:${bg};color:var(--plasma-text)" onclick="window.__calc('${b}')">${b}</button>`;
                             }).join('')}
                         </div>
                     </div>
@@ -2124,27 +1904,13 @@
             window.__calc = (b) => {
                 const dispEl = document.getElementById('calcDisplay');
                 if (!dispEl) return;
-                
-                if (b >= '0' && b <= '9' || b === '.') {
-                    display = waitOp ? b : (display === '0' && b !== '.' ? b : display + b);
-                    waitOp = false;
-                } else if (['+','-','×','÷'].includes(b)) {
-                    if (op && !waitOp) calculate();
-                    prev = parseFloat(display);
-                    op = b;
-                    waitOp = true;
-                } else if (b === '=') {
-                    calculate();
-                    op = null;
-                } else if (b === 'C') {
-                    display = '0'; prev = null; op = null;
-                } else if (b === '±') {
-                    display = String(-parseFloat(display));
-                } else if (b === '%') {
-                    display = String(parseFloat(display) / 100);
-                } else if (b === '⌫') {
-                    display = display.length > 1 ? display.slice(0, -1) : '0';
-                }
+                if (b >= '0' && b <= '9' || b === '.') { display = waitOp ? b : (display === '0' && b !== '.' ? b : display + b); waitOp = false; }
+                else if (['+','-','×','÷'].includes(b)) { if (op && !waitOp) calculate(); prev = parseFloat(display); op = b; waitOp = true; }
+                else if (b === '=') { calculate(); op = null; }
+                else if (b === 'C') { display = '0'; prev = null; op = null; }
+                else if (b === '±') { display = String(-parseFloat(display)); }
+                else if (b === '%') { display = String(parseFloat(display) / 100); }
+                else if (b === '⌫') { display = display.length > 1 ? display.slice(0, -1) : '0'; }
                 dispEl.textContent = display;
             };
             
@@ -2154,105 +1920,49 @@
                 if (op === '+') r = prev + cur;
                 else if (op === '-') r = prev - cur;
                 else if (op === '×') r = prev * cur;
-                else if (op === '÷') r = cur !== 0 ? prev / cur : 'Ошибка';
-                display = String(typeof r === 'number' ? Math.round(r * 1000000) / 1000000 : r);
+                else if (op === '÷') r = cur !== 0 ? prev / cur : 'Err';
+                display = String(typeof r === 'number' ? Math.round(r * 1e10) / 1e10 : r);
                 waitOp = true;
             }
-        }
-
-        // Firefox Browser
-        function openFirefox() {
-            const winId = createWindow({
-                title: 'Firefox',
-                icon: 'fa-firefox-browser',
-                iconType: 'fab',
-                width: 1000,
-                height: 650,
-                content: `
-                    <div class="kde-toolbar">
-                        <button class="kde-btn"><i class="fas fa-arrow-left"></i></button>
-                        <button class="kde-btn"><i class="fas fa-arrow-right"></i></button>
-                        <button class="kde-btn" onclick="document.getElementById('browserFrame').src = document.getElementById('browserUrl').value"><i class="fas fa-redo"></i></button>
-                        <input class="kde-input" style="flex:1;margin:0 8px" id="browserUrl" value="https://www.google.com/webhp?igu=1" placeholder="Введите URL...">
-                        <button class="kde-btn" onclick="document.getElementById('browserFrame').src = document.getElementById('browserUrl').value"><i class="fas fa-arrow-right"></i> Перейти</button>
-                    </div>
-                    <iframe id="browserFrame" style="width:100%;height:calc(100% - 46px);border:none;background:white" src="https://www.google.com/webhp?igu=1"></iframe>
-                `,
-                appId: 'firefox'
-            });
         }
 
         // Calendar
         function openCalendar() {
             const now = new Date();
-            const month = now.getMonth();
-            const year = now.getFullYear();
-            const today = now.getDate();
+            const month = now.getMonth(), year = now.getFullYear(), today = now.getDate();
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+            const months = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
             
             let days = [];
             for (let i = 0; i < (firstDay || 7) - 1; i++) days.push('');
             for (let i = 1; i <= daysInMonth; i++) days.push(i);
             
             createWindow({
-                title: 'Календарь',
-                icon: 'fa-calendar-alt',
-                width: 380,
-                height: 420,
+                title: 'Календарь', icon: 'fa-calendar-alt', width: 380, height: 420,
                 content: `
                     <div style="padding:20px;background:var(--plasma-bg);height:100%">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                            <button class="kde-btn"><i class="fas fa-chevron-left"></i></button>
-                            <span style="color:var(--plasma-text);font-size:18px;font-weight:500">${monthNames[month]} ${year}</span>
-                            <button class="kde-btn"><i class="fas fa-chevron-right"></i></button>
-                        </div>
+                        <div style="text-align:center;margin-bottom:20px;color:var(--plasma-text);font-size:20px">${months[month]} ${year}</div>
                         <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center">
-                            ${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d => `<div style="color:var(--plasma-text-secondary);font-size:12px;padding:8px;font-weight:500">${d}</div>`).join('')}
-                            ${days.map(d => `<div style="padding:10px;border-radius:8px;color:var(--plasma-text);${d === today ? 'background:var(--plasma-accent);font-weight:600' : ''};cursor:${d ? 'pointer' : 'default'};transition:background 0.15s" ${d ? 'onmouseover="if(!this.style.background.includes(\'accent\'))this.style.background=\'rgba(255,255,255,0.06)\'" onmouseout="if(!this.style.background.includes(\'accent\'))this.style.background=\'\'"' : ''}>${d}</div>`).join('')}
+                            ${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d => `<div style="color:var(--plasma-text-secondary);font-size:12px;padding:8px">${d}</div>`).join('')}
+                            ${days.map(d => `<div style="padding:10px;border-radius:8px;color:var(--plasma-text);${d === today ? 'background:var(--plasma-accent);font-weight:600' : ''}">${d}</div>`).join('')}
                         </div>
                     </div>
-                `,
-                appId: 'calendar'
+                `, appId: 'calendar'
             });
         }
 
-        // Weather
+        // Weather via AccuWeather
         function openWeather() {
             createWindow({
-                title: 'Погода',
-                icon: 'fa-cloud-sun',
-                width: 420,
-                height: 500,
+                title: 'Погода — AccuWeather', icon: 'fa-cloud-sun', width: 900, height: 600,
                 content: `
-                    <div style="padding:30px;background:linear-gradient(135deg,#1a73e8,#0d47a1);height:100%;color:white">
-                        <div style="text-align:center;margin-bottom:30px">
-                            <i class="fas fa-sun" style="font-size:64px;color:#ffd54f;margin-bottom:16px"></i>
-                            <div style="font-size:52px;font-weight:300;margin-bottom:8px">23°C</div>
-                            <div style="font-size:18px;opacity:0.9">Ясно</div>
-                            <div style="font-size:14px;opacity:0.7;margin-top:4px"><i class="fas fa-map-marker-alt"></i> Москва, Россия</div>
-                        </div>
-                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px">
-                            ${[{d:'Пн',i:'fa-cloud-sun',t:'20°'},{d:'Вт',i:'fa-cloud',t:'18°'},{d:'Ср',i:'fa-cloud-rain',t:'15°'},{d:'Чт',i:'fa-bolt',t:'14°'}].map(x => `
-                                <div style="background:rgba(255,255,255,0.15);padding:16px 8px;border-radius:12px;text-align:center">
-                                    <div style="font-size:12px;opacity:0.8">${x.d}</div>
-                                    <i class="fas ${x.i}" style="font-size:24px;margin:10px 0"></i>
-                                    <div style="font-size:16px;font-weight:500">${x.t}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                            <div style="background:rgba(255,255,255,0.15);padding:16px;border-radius:12px">
-                                <div style="font-size:12px;opacity:0.7"><i class="fas fa-tint"></i> Влажность</div>
-                                <div style="font-size:22px;font-weight:500;margin-top:4px">45%</div>
-                            </div>
-                            <div style="background:rgba(255,255,255,0.15);padding:16px;border-radius:12px">
-                                <div style="font-size:12px;opacity:0.7"><i class="fas fa-wind"></i> Ветер</div>
-                                <div style="font-size:22px;font-weight:500;margin-top:4px">12 км/ч</div>
-                            </div>
-                        </div>
+                    <div class="kde-toolbar">
+                        <button class="kde-btn" onclick="this.closest('.window-content').querySelector('iframe').src=this.closest('.window-content').querySelector('iframe').src"><i class="fas fa-redo"></i> Обновить</button>
+                        <span style="flex:1"></span>
+                        <button class="kde-btn" onclick="window.open('https://www.accuweather.com/','_blank')"><i class="fas fa-external-link-alt"></i> Открыть в браузере</button>
                     </div>
+                    <iframe src="https://www.accuweather.com/" style="width:100%;height:calc(100% - 46px);border:none;background:#fff"></iframe>
                 `,
                 appId: 'weather'
             });
@@ -2261,177 +1971,104 @@
         // System Monitor
         function openSystemMonitor() {
             createWindow({
-                title: 'Системный монитор',
-                icon: 'fa-chart-area',
-                width: 650,
-                height: 450,
+                title: 'Системный монитор', icon: 'fa-chart-area', width: 600, height: 400,
                 content: `
                     <div style="padding:20px;background:var(--plasma-bg);height:100%">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-                            ${[
-                                {name:'CPU',val:'23%',color:'#3daee9',w:23},
-                                {name:'Память',val:'4.2 / 16 GB',color:'#27ae60',w:26},
-                                {name:'Диск',val:'120 / 500 GB',color:'#f39c12',w:24},
-                                {name:'Swap',val:'0 / 8 GB',color:'#9b59b6',w:0}
-                            ].map(x => `
-                                <div style="background:var(--plasma-surface);padding:20px;border-radius:10px">
-                                    <div style="display:flex;justify-content:space-between;margin-bottom:12px">
-                                        <span style="color:var(--plasma-text-secondary);font-size:13px">${x.name}</span>
-                                        <span style="color:var(--plasma-text);font-size:13px">${x.val}</span>
+                            ${[{name:'CPU',val:'23%',color:'#3daee9',w:23},{name:'RAM',val:'4.2/16 GB',color:'#27ae60',w:26},{name:'Диск',val:'120/500 GB',color:'#f39c12',w:24},{name:'Swap',val:'0/8 GB',color:'#9b59b6',w:0}].map(x => `
+                                <div style="background:var(--plasma-surface);padding:16px;border-radius:10px">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+                                        <span style="color:var(--plasma-text-secondary)">${x.name}</span>
+                                        <span style="color:var(--plasma-text)">${x.val}</span>
                                     </div>
-                                    <div style="height:8px;background:var(--plasma-bg);border-radius:4px;overflow:hidden">
-                                        <div style="width:${x.w}%;height:100%;background:${x.color};border-radius:4px;transition:width 0.5s"></div>
+                                    <div style="height:6px;background:var(--plasma-bg);border-radius:3px">
+                                        <div style="width:${x.w}%;height:100%;background:${x.color};border-radius:3px"></div>
                                     </div>
                                 </div>
                             `).join('')}
                         </div>
-                        <div style="background:var(--plasma-surface);padding:20px;border-radius:10px;margin-top:20px">
-                            <div style="color:var(--plasma-text-secondary);font-size:13px;margin-bottom:12px"><i class="fas fa-network-wired"></i> Сеть</div>
-                            <div style="display:flex;gap:40px">
-                                <div><span style="color:#27ae60"><i class="fas fa-arrow-down"></i></span> <span style="color:var(--plasma-text)">2.5 MB/s</span></div>
-                                <div><span style="color:#3daee9"><i class="fas fa-arrow-up"></i></span> <span style="color:var(--plasma-text)">0.8 MB/s</span></div>
-                            </div>
-                        </div>
                     </div>
-                `,
-                appId: 'monitor'
-            });
-        }
-
-        // Elisa Music Player
-        function openElisa() {
-            createWindow({
-                title: 'Elisa',
-                icon: 'fa-music',
-                width: 480,
-                height: 380,
-                content: `
-                    <div style="padding:30px;background:linear-gradient(135deg,#8e24aa,#5e35b1);height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white">
-                        <div style="width:130px;height:130px;background:rgba(255,255,255,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;box-shadow:0 10px 40px rgba(0,0,0,0.3)">
-                            <i class="fas fa-music" style="font-size:50px"></i>
-                        </div>
-                        <div style="font-size:20px;font-weight:500;margin-bottom:6px">Демо трек</div>
-                        <div style="font-size:14px;opacity:0.7;margin-bottom:24px">Runget Music</div>
-                        <div style="width:100%;max-width:300px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin-bottom:8px">
-                            <div style="width:35%;height:100%;background:white;border-radius:2px"></div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;width:100%;max-width:300px;font-size:11px;opacity:0.7;margin-bottom:20px">
-                            <span>1:24</span><span>3:45</span>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:24px">
-                            <button style="background:none;border:none;color:white;font-size:20px;cursor:pointer;opacity:0.8"><i class="fas fa-step-backward"></i></button>
-                            <button style="width:56px;height:56px;border-radius:50%;background:white;border:none;color:#8e24aa;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.3)"><i class="fas fa-play"></i></button>
-                            <button style="background:none;border:none;color:white;font-size:20px;cursor:pointer;opacity:0.8"><i class="fas fa-step-forward"></i></button>
-                        </div>
-                    </div>
-                `,
-                appId: 'elisa'
+                `, appId: 'monitor'
             });
         }
 
         // Gwenview
         function openGwenview() {
             createWindow({
-                title: 'Gwenview',
-                icon: 'fa-image',
-                width: 650,
-                height: 480,
+                title: 'Gwenview', icon: 'fa-image', width: 650, height: 480,
                 content: `
                     <div class="kde-toolbar">
-                        <button class="kde-btn"><i class="fas fa-folder-open"></i> Открыть</button>
-                        <button class="kde-btn"><i class="fas fa-search-plus"></i></button>
-                        <button class="kde-btn"><i class="fas fa-search-minus"></i></button>
+                        <button class="kde-btn" onclick="document.getElementById('imgInput').click()"><i class="fas fa-folder-open"></i> Открыть</button>
+                        <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="const f=this.files[0];if(f){const r=new FileReader();r.onload=e=>document.getElementById('imgPreview').innerHTML='<img src=\\''+e.target.result+'\\' style=\\'max-width:100%;max-height:100%\\'>';r.readAsDataURL(f)}">
                     </div>
-                    <div style="padding:20px;background:var(--plasma-bg);height:calc(100% - 46px);display:flex;align-items:center;justify-content:center">
-                        <div style="text-align:center;color:var(--plasma-text-secondary)">
-                            <i class="fas fa-images" style="font-size:64px;margin-bottom:20px;opacity:0.4"></i>
-                            <div>Откройте изображение для просмотра</div>
+                    <div id="imgPreview" style="height:calc(100% - 46px);display:flex;align-items:center;justify-content:center;background:var(--plasma-bg);color:var(--plasma-text-secondary)">
+                        <div style="text-align:center"><i class="fas fa-image" style="font-size:64px;opacity:0.3;display:block;margin-bottom:16px"></i>Откройте изображение</div>
+                    </div>
+                `, appId: 'gwenview'
+            });
+        }
+
+        // Elisa
+        function openElisa() {
+            createWindow({
+                title: 'Elisa', icon: 'fa-music', width: 480, height: 380,
+                content: `
+                    <div style="padding:30px;background:linear-gradient(135deg,#8e24aa,#5e35b1);height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white">
+                        <div style="width:120px;height:120px;background:rgba(255,255,255,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px">
+                            <i class="fas fa-music" style="font-size:50px"></i>
+                        </div>
+                        <div style="font-size:20px;margin-bottom:6px">Демо трек</div>
+                        <div style="opacity:0.7;margin-bottom:20px">Runget Music</div>
+                        <div style="width:100%;max-width:280px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin-bottom:20px">
+                            <div style="width:35%;height:100%;background:white;border-radius:2px"></div>
+                        </div>
+                        <div style="display:flex;gap:20px">
+                            <button style="background:none;border:none;color:white;font-size:20px;cursor:pointer"><i class="fas fa-step-backward"></i></button>
+                            <button style="width:50px;height:50px;border-radius:50%;background:white;border:none;color:#8e24aa;font-size:20px;cursor:pointer"><i class="fas fa-play"></i></button>
+                            <button style="background:none;border:none;color:white;font-size:20px;cursor:pointer"><i class="fas fa-step-forward"></i></button>
                         </div>
                     </div>
-                `,
-                appId: 'gwenview'
+                `, appId: 'elisa'
             });
         }
 
         // Okular
         function openOkular() {
             createWindow({
-                title: 'Okular',
-                icon: 'fa-file-pdf',
-                width: 650,
-                height: 520,
+                title: 'Okular', icon: 'fa-file-pdf', width: 650, height: 520,
                 content: `
                     <div class="kde-toolbar">
-                        <button class="kde-btn"><i class="fas fa-folder-open"></i> Открыть</button>
-                        <button class="kde-btn"><i class="fas fa-print"></i></button>
+                        <button class="kde-btn" onclick="document.getElementById('pdfInput').click()"><i class="fas fa-folder-open"></i> Открыть</button>
+                        <input type="file" id="pdfInput" accept=".pdf" style="display:none" onchange="if(this.files[0])document.getElementById('pdfFrame').src=URL.createObjectURL(this.files[0])">
                     </div>
-                    <div style="display:flex;align-items:center;justify-content:center;height:calc(100% - 46px);background:var(--plasma-bg)">
-                        <div style="text-align:center;color:var(--plasma-text-secondary)">
-                            <i class="fas fa-file-pdf" style="font-size:64px;margin-bottom:20px;opacity:0.4"></i>
-                            <div>Откройте PDF документ</div>
-                        </div>
-                    </div>
-                `,
-                appId: 'okular'
-            });
-        }
-
-        // LibreOffice Writer
-        function openLibreOffice() {
-            createWindow({
-                title: 'LibreOffice Writer',
-                icon: 'fa-file-word',
-                width: 800,
-                height: 550,
-                content: `
-                    <div class="kde-toolbar">
-                        <button class="kde-btn"><i class="fas fa-file"></i> Новый</button>
-                        <button class="kde-btn"><i class="fas fa-folder-open"></i> Открыть</button>
-                        <button class="kde-btn"><i class="fas fa-save"></i> Сохранить</button>
-                        <div style="width:1px;height:24px;background:var(--plasma-border);margin:0 8px"></div>
-                        <button class="kde-btn"><i class="fas fa-bold"></i></button>
-                        <button class="kde-btn"><i class="fas fa-italic"></i></button>
-                        <button class="kde-btn"><i class="fas fa-underline"></i></button>
-                    </div>
-                    <div contenteditable="true" style="padding:40px 60px;background:white;color:#333;height:calc(100% - 46px);overflow-y:auto;font-family:serif;font-size:14px;line-height:1.8;outline:none">
-                        <h1 style="font-size:24px;margin-bottom:20px">Добро пожаловать в LibreOffice Writer</h1>
-                        <p>Начните вводить текст здесь...</p>
-                    </div>
-                `,
-                appId: 'libreoffice'
+                    <iframe id="pdfFrame" style="width:100%;height:calc(100% - 46px);border:none;background:#525659"></iframe>
+                `, appId: 'okular'
             });
         }
 
         // Krita
         function openKrita() {
             const winId = createWindow({
-                title: 'Krita',
-                icon: 'fa-paint-brush',
-                width: 850,
-                height: 580,
+                title: 'Krita', icon: 'fa-paint-brush', width: 850, height: 580,
                 content: `
                     <div class="kde-toolbar">
-                        <input type="color" id="paintColor" value="#ffffff" style="width:36px;height:30px;border:none;border-radius:6px;cursor:pointer">
+                        <input type="color" id="paintColor" value="#ffffff" style="width:36px;height:30px;border:none;border-radius:4px;cursor:pointer">
                         <input type="range" id="paintSize" min="1" max="50" value="5" style="width:100px">
-                        <span style="color:var(--plasma-text);font-size:12px;min-width:40px" id="paintSizeLabel">5px</span>
+                        <span style="color:var(--plasma-text);font-size:12px" id="paintSizeLabel">5px</span>
                         <button class="kde-btn" onclick="window.__clearCanvas()"><i class="fas fa-trash"></i> Очистить</button>
                         <button class="kde-btn" onclick="window.__saveCanvas()"><i class="fas fa-save"></i> Сохранить</button>
                     </div>
                     <canvas id="paintCanvas" style="cursor:crosshair;display:block"></canvas>
-                `,
-                appId: 'krita'
+                `, appId: 'krita'
             });
             
             setTimeout(() => {
                 const canvas = document.getElementById('paintCanvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = 848;
-                canvas.height = 488;
-                ctx.fillStyle = '#1b1e20';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                canvas.width = 848; canvas.height = 488;
+                ctx.fillStyle = '#1b1e20'; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
                 let drawing = false, lastX = 0, lastY = 0;
-                
                 canvas.onmousedown = (e) => { drawing = true; [lastX, lastY] = [e.offsetX, e.offsetY]; };
                 canvas.onmousemove = (e) => {
                     if (!drawing) return;
@@ -2439,213 +2076,387 @@
                     ctx.strokeStyle = document.getElementById('paintColor').value;
                     ctx.lineWidth = document.getElementById('paintSize').value;
                     ctx.lineCap = 'round';
-                    ctx.lineJoin = 'round';
                     ctx.moveTo(lastX, lastY);
                     ctx.lineTo(e.offsetX, e.offsetY);
                     ctx.stroke();
                     [lastX, lastY] = [e.offsetX, e.offsetY];
                 };
-                canvas.onmouseup = () => drawing = false;
-                canvas.onmouseleave = () => drawing = false;
-                
-                document.getElementById('paintSize').oninput = (e) => {
-                    document.getElementById('paintSizeLabel').textContent = e.target.value + 'px';
-                };
-                
+                canvas.onmouseup = canvas.onmouseleave = () => drawing = false;
+                document.getElementById('paintSize').oninput = (e) => document.getElementById('paintSizeLabel').textContent = e.target.value + 'px';
                 window.__clearCanvas = () => { ctx.fillStyle = '#1b1e20'; ctx.fillRect(0, 0, canvas.width, canvas.height); };
-                window.__saveCanvas = () => {
-                    const a = document.createElement('a');
-                    a.href = canvas.toDataURL('image/png');
-                    a.download = 'artwork.png';
-                    a.click();
-                    showNotification('Изображение сохранено', 'success');
-                };
+                window.__saveCanvas = () => { const a = document.createElement('a'); a.href = canvas.toDataURL(); a.download = 'artwork.png'; a.click(); showNotification('Сохранено!', 'success'); };
             }, 50);
         }
 
-        // Snake Game
-        function openSnake() {
-            const winId = createWindow({
-                title: 'Змейка',
-                icon: 'fa-gamepad',
-                width: 440,
-                height: 520,
+        // LibreOffice
+        function openLibreOffice() {
+            createWindow({
+                title: 'LibreOffice Writer', icon: 'fa-file-word', width: 800, height: 550,
                 content: `
-                    <div style="padding:16px;background:var(--plasma-bg);height:100%;display:flex;flex-direction:column;align-items:center">
-                        <div style="display:flex;justify-content:space-between;width:100%;margin-bottom:12px;align-items:center">
-                            <span style="color:var(--plasma-text)"><i class="fas fa-star"></i> Счёт: <span id="snakeScore">0</span></span>
-                            <button class="kde-btn" onclick="window.__startSnake()"><i class="fas fa-play"></i> Старт</button>
-                        </div>
-                        <canvas id="snakeCanvas" width="400" height="400" style="background:var(--plasma-surface);border-radius:10px"></canvas>
-                        <div style="color:var(--plasma-text-secondary);font-size:12px;margin-top:12px"><i class="fas fa-keyboard"></i> Используйте стрелки для управления</div>
+                    <div class="kde-toolbar">
+                        <button class="kde-btn"><i class="fas fa-bold"></i></button>
+                        <button class="kde-btn"><i class="fas fa-italic"></i></button>
+                        <button class="kde-btn"><i class="fas fa-underline"></i></button>
+                        <span style="flex:1"></span>
+                        <button class="kde-btn" onclick="const t=this.closest('.window-content').querySelector('[contenteditable]').innerText;const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='document.txt';a.click()"><i class="fas fa-save"></i> Сохранить</button>
                     </div>
-                `,
-                appId: 'snake'
+                    <div contenteditable="true" style="padding:40px;background:white;color:#333;height:calc(100% - 46px);overflow:auto;font-family:serif;outline:none">
+                        <h1>Добро пожаловать в LibreOffice Writer</h1>
+                        <p>Начните вводить текст здесь...</p>
+                    </div>
+                `, appId: 'libreoffice'
             });
-            
-            const canvas = document.getElementById('snakeCanvas');
-            const ctx = canvas.getContext('2d');
-            const size = 20;
-            let snake, food, dir, score, loop;
-            
-            function init() {
-                snake = [{x:10,y:10}];
-                dir = {x:1,y:0};
-                score = 0;
-                placeFood();
-                document.getElementById('snakeScore').textContent = score;
-            }
-            
-            function placeFood() {
-                food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
-            }
-            
-            function draw() {
-                ctx.fillStyle = '#232629';
-                ctx.fillRect(0, 0, 400, 400);
-                
-                // Draw grid
-                ctx.strokeStyle = '#2a2e32';
-                for (let i = 0; i <= 20; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(i * size, 0);
-                    ctx.lineTo(i * size, 400);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(0, i * size);
-                    ctx.lineTo(400, i * size);
-                    ctx.stroke();
-                }
-                
-                snake.forEach((s, i) => {
-                    ctx.fillStyle = i === 0 ? '#27ae60' : '#2ecc71';
-                    ctx.beginPath();
-                    ctx.roundRect(s.x * size + 1, s.y * size + 1, size - 2, size - 2, 4);
-                    ctx.fill();
-                });
-                
-                ctx.fillStyle = '#e74c3c';
-                ctx.beginPath();
-                ctx.arc(food.x * size + size/2, food.y * size + size/2, size/2 - 2, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            
-            function update() {
-                const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
-                if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(s => s.x === head.x && s.y === head.y)) {
-                    clearInterval(loop);
-                    showNotification(`Игра окончена! Счёт: ${score}`, 'info');
-                    return;
-                }
-                snake.unshift(head);
-                if (head.x === food.x && head.y === food.y) {
-                    score++;
-                    document.getElementById('snakeScore').textContent = score;
-                    placeFood();
-                } else {
-                    snake.pop();
-                }
-                draw();
-            }
-            
-            document.addEventListener('keydown', (e) => {
-                if (!document.getElementById(`window-${winId}`)) return;
-                const dirs = { ArrowUp:{x:0,y:-1}, ArrowDown:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, ArrowRight:{x:1,y:0} };
-                if (dirs[e.key] && (dirs[e.key].x !== -dir.x || dirs[e.key].y !== -dir.y)) {
-                    e.preventDefault();
-                    dir = dirs[e.key];
-                }
-            });
-            
-            window.__startSnake = () => {
-                clearInterval(loop);
-                init();
-                draw();
-                loop = setInterval(update, 100);
-            };
-            
-            init();
-            draw();
         }
 
         // Tasks
         function openTasks() {
             let tasks = JSON.parse(localStorage.getItem('runget-tasks') || '[]');
+            const winId = createWindow({ title: 'Задачи', icon: 'fa-tasks', width: 450, height: 480, content: '', appId: 'tasks' });
             
             function render() {
                 return `
                     <div style="padding:20px;background:var(--plasma-bg);height:100%">
                         <div style="display:flex;gap:10px;margin-bottom:20px">
                             <input class="kde-input" style="flex:1" id="taskInput" placeholder="Новая задача...">
-                            <button class="kde-btn" onclick="window.__addTask()"><i class="fas fa-plus"></i> Добавить</button>
+                            <button class="kde-btn" onclick="window.__addTask()"><i class="fas fa-plus"></i></button>
                         </div>
-                        <div id="tasksList" style="display:flex;flex-direction:column;gap:10px">
+                        <div id="tasksList">
                             ${tasks.map((t, i) => `
-                                <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--plasma-surface);border-radius:8px">
-                                    <input type="checkbox" ${t.done ? 'checked' : ''} onchange="window.__toggleTask(${i})" style="width:20px;height:20px;accent-color:var(--plasma-accent)">
+                                <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--plasma-surface);border-radius:8px;margin-bottom:8px">
+                                    <input type="checkbox" ${t.done ? 'checked' : ''} onchange="window.__toggleTask(${i})" style="width:18px;height:18px">
                                     <span style="flex:1;color:var(--plasma-text);${t.done ? 'text-decoration:line-through;opacity:0.5' : ''}">${t.text}</span>
-                                    <button style="background:none;border:none;color:var(--plasma-danger);cursor:pointer;font-size:16px;padding:4px" onclick="window.__removeTask(${i})"><i class="fas fa-trash"></i></button>
+                                    <button style="background:none;border:none;color:var(--plasma-danger);cursor:pointer" onclick="window.__removeTask(${i})"><i class="fas fa-trash"></i></button>
                                 </div>
-                            `).join('')}
-                            ${tasks.length === 0 ? '<div style="text-align:center;color:var(--plasma-text-secondary);padding:50px"><i class="fas fa-check-circle" style="font-size:48px;margin-bottom:16px;display:block;opacity:0.4"></i>Нет задач</div>' : ''}
+                            `).join('') || '<div style="text-align:center;color:var(--plasma-text-secondary);padding:40px">Нет задач</div>'}
                         </div>
                     </div>
                 `;
             }
             
-            const winId = createWindow({ title: 'Задачи', icon: 'fa-tasks', width: 450, height: 480, content: render(), appId: 'tasks' });
-            
+            document.querySelector(`#window-${winId} .window-content`).innerHTML = render();
             const save = () => localStorage.setItem('runget-tasks', JSON.stringify(tasks));
-            const refresh = () => { document.querySelector(`#window-${winId} .window-content`).innerHTML = render(); };
+            const refresh = () => document.querySelector(`#window-${winId} .window-content`).innerHTML = render();
             
-            window.__addTask = () => {
-                const input = document.getElementById('taskInput');
-                if (input.value.trim()) {
-                    tasks.push({ text: input.value.trim(), done: false });
-                    save(); refresh();
-                }
-            };
+            window.__addTask = () => { const input = document.getElementById('taskInput'); if (input.value.trim()) { tasks.push({ text: input.value.trim(), done: false }); save(); refresh(); } };
             window.__toggleTask = (i) => { tasks[i].done = !tasks[i].done; save(); refresh(); };
             window.__removeTask = (i) => { tasks.splice(i, 1); save(); refresh(); };
         }
 
-        // Discover
-        function openDiscover() {
+        // Notes
+        function openNotes() {
+            const notes = localStorage.getItem('runget-notes') || '';
             createWindow({
-                title: 'Discover',
-                icon: 'fa-store',
-                width: 850,
-                height: 550,
+                title: 'Заметки', icon: 'fa-sticky-note', width: 400, height: 400,
                 content: `
-                    <div class="kde-toolbar">
-                        <input class="kde-input" style="flex:1" placeholder="Поиск приложений...">
-                        <button class="kde-btn"><i class="fas fa-sync"></i> Обновить</button>
+                    <textarea style="width:100%;height:100%;background:var(--plasma-bg);color:var(--plasma-text);border:none;padding:16px;resize:none;outline:none;font-size:14px" 
+                              placeholder="Введите заметки..."
+                              oninput="localStorage.setItem('runget-notes',this.value)">${notes}</textarea>
+                `, appId: 'notes'
+            });
+        }
+
+        // Clock
+        function openClock() {
+            const winId = createWindow({ title: 'Часы', icon: 'fa-clock', width: 350, height: 400, content: '', appId: 'clock' });
+            
+            function update() {
+                const now = new Date();
+                const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+                const el = document.querySelector(`#window-${winId} .window-content`);
+                if (!el) return;
+                el.innerHTML = `
+                    <div style="padding:30px;text-align:center;background:var(--plasma-bg);height:100%">
+                        <div style="font-size:48px;color:var(--plasma-text);font-weight:300;margin-bottom:10px">${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</div>
+                        <div style="color:var(--plasma-text-secondary);margin-bottom:30px">${now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}</div>
+                        <svg width="180" height="180" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="95" fill="none" stroke="var(--plasma-border)" stroke-width="4"/>
+                            ${[...Array(12)].map((_, i) => `<line x1="100" y1="15" x2="100" y2="25" stroke="var(--plasma-text)" stroke-width="2" transform="rotate(${i*30} 100 100)"/>`).join('')}
+                            <line x1="100" y1="100" x2="100" y2="45" stroke="var(--plasma-text)" stroke-width="4" stroke-linecap="round" transform="rotate(${(h%12)*30 + m/2} 100 100)"/>
+                            <line x1="100" y1="100" x2="100" y2="30" stroke="var(--plasma-text)" stroke-width="3" stroke-linecap="round" transform="rotate(${m*6} 100 100)"/>
+                            <line x1="100" y1="100" x2="100" y2="25" stroke="var(--plasma-accent)" stroke-width="2" stroke-linecap="round" transform="rotate(${s*6} 100 100)"/>
+                            <circle cx="100" cy="100" r="6" fill="var(--plasma-accent)"/>
+                        </svg>
                     </div>
-                    <div style="padding:20px;background:var(--plasma-bg);height:calc(100% - 46px);overflow-y:auto">
-                        <h3 style="color:var(--plasma-text);margin-bottom:16px"><i class="fas fa-star"></i> Рекомендуемые</h3>
-                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-                            ${[
-                                {name:'Firefox',icon:'fa-firefox-browser',desc:'Веб-браузер',fab:true},
-                                {name:'LibreOffice',icon:'fa-file-word',desc:'Офисный пакет'},
-                                {name:'GIMP',icon:'fa-paint-brush',desc:'Редактор изображений'},
-                                {name:'VLC',icon:'fa-play-circle',desc:'Медиаплеер'},
-                                {name:'Telegram',icon:'fa-telegram',desc:'Мессенджер',fab:true},
-                                {name:'VS Code',icon:'fa-code',desc:'Редактор кода'}
-                            ].map(a => `
-                                <div style="background:var(--plasma-surface);padding:20px;border-radius:10px;display:flex;gap:16px;align-items:center">
-                                    <i class="${a.fab?'fab':'fas'} ${a.icon}" style="font-size:36px;color:var(--plasma-accent);width:45px"></i>
-                                    <div style="flex:1">
-                                        <div style="color:var(--plasma-text);font-weight:500">${a.name}</div>
-                                        <div style="color:var(--plasma-text-secondary);font-size:12px">${a.desc}</div>
-                                    </div>
-                                    <button class="kde-btn" style="font-size:11px">Установить</button>
-                                </div>
-                            `).join('')}
+                `;
+            }
+            update();
+            const interval = setInterval(update, 1000);
+        }
+
+        // ==================== GAMES ====================
+        
+        // Snake
+        function openSnake() {
+            const winId = createWindow({ title: 'Змейка', icon: 'fa-gamepad', width: 440, height: 520, content: `
+                <div class="game-container">
+                    <div class="game-info"><span class="game-score"><i class="fas fa-star"></i> <span id="snakeScore">0</span></span><button class="kde-btn" onclick="window.__startSnake()"><i class="fas fa-play"></i> Старт</button></div>
+                    <canvas id="snakeCanvas" class="game-canvas" width="400" height="400"></canvas>
+                    <div style="color:var(--plasma-text-secondary);font-size:12px;margin-top:10px">Стрелки для управления</div>
+                </div>
+            `, appId: 'snake' });
+            
+            const canvas = document.getElementById('snakeCanvas');
+            const ctx = canvas.getContext('2d');
+            let snake, food, dir, score, loop;
+            
+            function init() { snake = [{x:10,y:10}]; dir = {x:1,y:0}; score = 0; placeFood(); document.getElementById('snakeScore').textContent = score; }
+            function placeFood() { food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) }; }
+            function draw() {
+                ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, 400, 400);
+                snake.forEach((s, i) => { ctx.fillStyle = i === 0 ? '#27ae60' : '#2ecc71'; ctx.fillRect(s.x * 20 + 1, s.y * 20 + 1, 18, 18); });
+                ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.arc(food.x * 20 + 10, food.y * 20 + 10, 8, 0, Math.PI * 2); ctx.fill();
+            }
+            function update() {
+                const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+                if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(s => s.x === head.x && s.y === head.y)) {
+                    clearInterval(loop); showNotification(`Игра окончена! Счёт: ${score}`, 'info'); return;
+                }
+                snake.unshift(head);
+                if (head.x === food.x && head.y === food.y) { score++; document.getElementById('snakeScore').textContent = score; placeFood(); }
+                else snake.pop();
+                draw();
+            }
+            
+            document.addEventListener('keydown', (e) => {
+                const dirs = { ArrowUp:{x:0,y:-1}, ArrowDown:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, ArrowRight:{x:1,y:0} };
+                if (dirs[e.key] && (dirs[e.key].x !== -dir.x || dirs[e.key].y !== -dir.y)) { e.preventDefault(); dir = dirs[e.key]; }
+            });
+            
+            window.__startSnake = () => { clearInterval(loop); init(); draw(); loop = setInterval(update, 100); };
+            init(); draw();
+        }
+
+        // Tetris
+        function openTetris() {
+            const winId = createWindow({ title: 'Тетрис', icon: 'fa-th', width: 360, height: 520, content: `
+                <div class="game-container">
+                    <div class="game-info"><span class="game-score"><i class="fas fa-star"></i> <span id="tetrisScore">0</span></span><button class="kde-btn" onclick="window.__startTetris()"><i class="fas fa-play"></i> Старт</button></div>
+                    <canvas id="tetrisCanvas" class="game-canvas" width="200" height="400"></canvas>
+                </div>
+            `, appId: 'tetris' });
+            
+            const canvas = document.getElementById('tetrisCanvas');
+            const ctx = canvas.getContext('2d');
+            const cols = 10, rows = 20, size = 20;
+            const shapes = [[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];
+            const colors = ['#00f0f0','#f0f000','#a000f0','#f0a000','#0000f0','#00f000','#f00000'];
+            let board, piece, pieceX, pieceY, pieceType, score, loop;
+            
+            function init() { board = Array(rows).fill().map(() => Array(cols).fill(0)); score = 0; newPiece(); document.getElementById('tetrisScore').textContent = score; }
+            function newPiece() { pieceType = Math.floor(Math.random() * shapes.length); piece = shapes[pieceType]; pieceX = Math.floor(cols / 2) - 1; pieceY = 0; if (collision()) { clearInterval(loop); showNotification(`Игра окончена! Счёт: ${score}`, 'info'); } }
+            function collision() { for (let y = 0; y < piece.length; y++) for (let x = 0; x < piece[y].length; x++) if (piece[y][x] && (board[pieceY + y]?.[pieceX + x] !== 0 || pieceX + x < 0 || pieceX + x >= cols || pieceY + y >= rows)) return true; return false; }
+            function merge() { for (let y = 0; y < piece.length; y++) for (let x = 0; x < piece[y].length; x++) if (piece[y][x]) board[pieceY + y][pieceX + x] = pieceType + 1; }
+            function clearLines() { for (let y = rows - 1; y >= 0; y--) if (board[y].every(c => c)) { board.splice(y, 1); board.unshift(Array(cols).fill(0)); score += 100; y++; } document.getElementById('tetrisScore').textContent = score; }
+            function rotate() { const rotated = piece[0].map((_, i) => piece.map(r => r[i]).reverse()); const old = piece; piece = rotated; if (collision()) piece = old; }
+            function draw() {
+                ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, 200, 400);
+                for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) if (board[y][x]) { ctx.fillStyle = colors[board[y][x] - 1]; ctx.fillRect(x * size + 1, y * size + 1, size - 2, size - 2); }
+                ctx.fillStyle = colors[pieceType];
+                for (let y = 0; y < piece.length; y++) for (let x = 0; x < piece[y].length; x++) if (piece[y][x]) ctx.fillRect((pieceX + x) * size + 1, (pieceY + y) * size + 1, size - 2, size - 2);
+            }
+            function update() { pieceY++; if (collision()) { pieceY--; merge(); clearLines(); newPiece(); } draw(); }
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') { pieceX--; if (collision()) pieceX++; }
+                else if (e.key === 'ArrowRight') { pieceX++; if (collision()) pieceX--; }
+                else if (e.key === 'ArrowDown') { pieceY++; if (collision()) pieceY--; }
+                else if (e.key === 'ArrowUp') rotate();
+                draw();
+            });
+            
+            window.__startTetris = () => { clearInterval(loop); init(); draw(); loop = setInterval(update, 500); };
+            init(); draw();
+        }
+
+        // Pong
+        function openPong() {
+            const winId = createWindow({ title: 'Пинг-понг', icon: 'fa-table-tennis', width: 520, height: 420, content: `
+                <div class="game-container">
+                    <div class="game-info"><span class="game-score"><span id="pongScore1">0</span> : <span id="pongScore2">0</span></span><button class="kde-btn" onclick="window.__startPong()"><i class="fas fa-play"></i> Старт</button></div>
+                    <canvas id="pongCanvas" class="game-canvas" width="480" height="320"></canvas>
+                </div>
+            `, appId: 'pong' });
+            
+            const canvas = document.getElementById('pongCanvas');
+            const ctx = canvas.getContext('2d');
+            let ball, p1, p2, score1, score2, loop;
+            
+            function init() { ball = {x:240,y:160,vx:4,vy:2}; p1 = p2 = 130; score1 = score2 = 0; updateScore(); }
+            function updateScore() { document.getElementById('pongScore1').textContent = score1; document.getElementById('pongScore2').textContent = score2; }
+            function draw() {
+                ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, 480, 320);
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(10, p1, 10, 60);
+                ctx.fillRect(460, p2, 10, 60);
+                ctx.beginPath(); ctx.arc(ball.x, ball.y, 8, 0, Math.PI * 2); ctx.fill();
+                ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(240, 0); ctx.lineTo(240, 320); ctx.strokeStyle = '#444'; ctx.stroke(); ctx.setLineDash([]);
+            }
+            function update() {
+                ball.x += ball.vx; ball.y += ball.vy;
+                if (ball.y <= 8 || ball.y >= 312) ball.vy = -ball.vy;
+                if (ball.x <= 28 && ball.y >= p1 && ball.y <= p1 + 60) ball.vx = -ball.vx;
+                if (ball.x >= 452 && ball.y >= p2 && ball.y <= p2 + 60) ball.vx = -ball.vx;
+                if (ball.x < 0) { score2++; updateScore(); ball = {x:240,y:160,vx:4,vy:2}; }
+                if (ball.x > 480) { score1++; updateScore(); ball = {x:240,y:160,vx:-4,vy:2}; }
+                // AI
+                if (p2 + 30 < ball.y) p2 = Math.min(260, p2 + 3);
+                if (p2 + 30 > ball.y) p2 = Math.max(0, p2 - 3);
+                draw();
+            }
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp') p1 = Math.max(0, p1 - 20);
+                if (e.key === 'ArrowDown') p1 = Math.min(260, p1 + 20);
+            });
+            
+            window.__startPong = () => { clearInterval(loop); init(); draw(); loop = setInterval(update, 16); };
+            init(); draw();
+        }
+
+        // 2048
+        function open2048() {
+            const winId = createWindow({ title: '2048', icon: 'fa-th-large', width: 400, height: 480, content: '', appId: 'game2048' });
+            let grid, score;
+            
+            function init() { grid = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]; score = 0; addTile(); addTile(); }
+            function addTile() { const empty = []; for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) if (!grid[y][x]) empty.push({x, y}); if (empty.length) { const {x, y} = empty[Math.floor(Math.random() * empty.length)]; grid[y][x] = Math.random() < 0.9 ? 2 : 4; } }
+            function getColor(v) { const c = {0:'#3d4349',2:'#eee4da',4:'#ede0c8',8:'#f2b179',16:'#f59563',32:'#f67c5f',64:'#f65e3b',128:'#edcf72',256:'#edcc61',512:'#edc850',1024:'#edc53f',2048:'#edc22e'}; return c[v] || '#3c3a32'; }
+            function render() {
+                const el = document.querySelector(`#window-${winId} .window-content`);
+                if (!el) return;
+                el.innerHTML = `
+                    <div style="padding:20px;background:var(--plasma-bg);height:100%">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:15px">
+                            <span style="color:var(--plasma-text);font-size:18px">Счёт: ${score}</span>
+                            <button class="kde-btn" onclick="window.__start2048()"><i class="fas fa-redo"></i></button>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:var(--plasma-surface);padding:8px;border-radius:8px">
+                            ${grid.flat().map(v => `<div style="height:70px;display:flex;align-items:center;justify-content:center;background:${getColor(v)};border-radius:6px;font-size:24px;font-weight:bold;color:${v > 4 ? '#fff' : '#776e65'}">${v || ''}</div>`).join('')}
+                        </div>
+                        <div style="color:var(--plasma-text-secondary);font-size:12px;margin-top:15px;text-align:center">Стрелки для управления</div>
+                    </div>
+                `;
+            }
+            function move(dir) {
+                let moved = false;
+                const rotate = (g) => g[0].map((_, i) => g.map(r => r[i]).reverse());
+                for (let i = 0; i < dir; i++) grid = rotate(grid);
+                for (let y = 0; y < 4; y++) {
+                    let row = grid[y].filter(v => v);
+                    for (let i = 0; i < row.length - 1; i++) if (row[i] === row[i + 1]) { row[i] *= 2; score += row[i]; row.splice(i + 1, 1); }
+                    while (row.length < 4) row.push(0);
+                    if (row.join(',') !== grid[y].join(',')) moved = true;
+                    grid[y] = row;
+                }
+                for (let i = 0; i < (4 - dir) % 4; i++) grid = rotate(grid);
+                if (moved) addTile();
+                render();
+            }
+            
+            document.addEventListener('keydown', (e) => {
+                const dirs = { ArrowLeft: 0, ArrowUp: 1, ArrowRight: 2, ArrowDown: 3 };
+                if (dirs[e.key] !== undefined) { e.preventDefault(); move(dirs[e.key]); }
+            });
+            
+            window.__start2048 = () => { init(); render(); };
+            init(); render();
+        }
+
+        // Minesweeper
+        function openMinesweeper() {
+            const winId = createWindow({ title: 'Сапёр', icon: 'fa-bomb', width: 350, height: 420, content: '', appId: 'minesweeper' });
+            const size = 10, mines = 15;
+            let grid, revealed, flags, gameOver;
+            
+            function init() {
+                grid = Array(size).fill().map(() => Array(size).fill(0));
+                revealed = Array(size).fill().map(() => Array(size).fill(false));
+                flags = Array(size).fill().map(() => Array(size).fill(false));
+                gameOver = false;
+                let placed = 0;
+                while (placed < mines) {
+                    const x = Math.floor(Math.random() * size), y = Math.floor(Math.random() * size);
+                    if (grid[y][x] !== -1) { grid[y][x] = -1; placed++; }
+                }
+                for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (grid[y][x] !== -1) {
+                    let count = 0;
+                    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (grid[y + dy]?.[x + dx] === -1) count++;
+                    grid[y][x] = count;
+                }
+            }
+            function reveal(x, y) {
+                if (gameOver || revealed[y][x] || flags[y][x]) return;
+                revealed[y][x] = true;
+                if (grid[y][x] === -1) { gameOver = true; showNotification('Вы проиграли!', 'error'); }
+                else if (grid[y][x] === 0) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (grid[y + dy]?.[x + dx] !== undefined) reveal(x + dx, y + dy);
+                render();
+            }
+            function flag(x, y, e) { e.preventDefault(); if (!revealed[y][x]) { flags[y][x] = !flags[y][x]; render(); } }
+            function render() {
+                const colors = ['','#3daee9','#27ae60','#e74c3c','#9b59b6','#f39c12','#1abc9c','#34495e','#95a5a6'];
+                const el = document.querySelector(`#window-${winId} .window-content`);
+                if (!el) return;
+                el.innerHTML = `
+                    <div style="padding:15px;background:var(--plasma-bg);height:100%">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+                            <span style="color:var(--plasma-text)"><i class="fas fa-bomb"></i> ${mines}</span>
+                            <button class="kde-btn" onclick="window.__startMine()"><i class="fas fa-redo"></i></button>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(${size},1fr);gap:2px">
+                            ${grid.flat().map((v, i) => {
+                                const x = i % size, y = Math.floor(i / size);
+                                let content = '', bg = 'var(--plasma-surface)';
+                                if (revealed[y][x]) { bg = 'var(--plasma-bg)'; content = v === -1 ? '<i class="fas fa-bomb"></i>' : v || ''; }
+                                else if (flags[y][x]) content = '<i class="fas fa-flag" style="color:#e74c3c"></i>';
+                                return `<div onclick="window.__revealMine(${x},${y})" oncontextmenu="window.__flagMine(${x},${y},event)" style="height:28px;display:flex;align-items:center;justify-content:center;background:${bg};border-radius:3px;cursor:pointer;font-size:12px;font-weight:bold;color:${colors[v] || '#fff'}">${content}</div>`;
+                            }).join('')}
                         </div>
                     </div>
-                `,
-                appId: 'discover'
-            });
+                `;
+            }
+            
+            window.__startMine = () => { init(); render(); };
+            window.__revealMine = reveal;
+            window.__flagMine = flag;
+            init(); render();
+        }
+
+        // Tic Tac Toe
+        function openTicTacToe() {
+            const winId = createWindow({ title: 'Крестики-нолики', icon: 'fa-times', width: 350, height: 400, content: '', appId: 'tictactoe' });
+            let board, turn, gameOver;
+            
+            function init() { board = ['','','','','','','','','']; turn = 'X'; gameOver = false; }
+            function check() {
+                const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+                for (const [a, b, c] of wins) if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
+                return board.every(c => c) ? 'draw' : null;
+            }
+            function play(i) {
+                if (gameOver || board[i]) return;
+                board[i] = turn;
+                const result = check();
+                if (result) { gameOver = true; showNotification(result === 'draw' ? 'Ничья!' : `${result} победил!`, 'info'); }
+                else turn = turn === 'X' ? 'O' : 'X';
+                render();
+            }
+            function render() {
+                const el = document.querySelector(`#window-${winId} .window-content`);
+                if (!el) return;
+                el.innerHTML = `
+                    <div style="padding:20px;background:var(--plasma-bg);height:100%;display:flex;flex-direction:column;align-items:center">
+                        <div style="margin-bottom:15px;color:var(--plasma-text)">Ход: ${turn}</div>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:15px">
+                            ${board.map((v, i) => `<div onclick="window.__playTTT(${i})" style="width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:var(--plasma-surface);border-radius:8px;cursor:pointer;font-size:36px;font-weight:bold;color:${v === 'X' ? '#3daee9' : '#e74c3c'}">${v}</div>`).join('')}
+                        </div>
+                        <button class="kde-btn" onclick="window.__startTTT()"><i class="fas fa-redo"></i> Заново</button>
+                    </div>
+                `;
+            }
+            
+            window.__startTTT = () => { init(); render(); };
+            window.__playTTT = play;
+            init(); render();
         }
 
         // Start boot
